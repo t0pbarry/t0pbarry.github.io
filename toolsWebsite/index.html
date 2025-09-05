@@ -1,0 +1,760 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" href="/img/icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Winter">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="常用工具  包括不限于渗透测试，程序开发等，当个备忘录吧，排名不分先后，陆续收集中…  burpsuite相关收集: https:&#x2F;&#x2F;github.com&#x2F;Mr-xn&#x2F;BurpSuite-collections  渗透测试有关的POC、脚本、提权小工具等，欢迎补充、完善 https:&#x2F;&#x2F;github.com&#x2F;Mr-xn&#x2F;Penetration_Testin">
+<meta property="og:type" content="website">
+<meta property="og:title" content="toolsWebsite">
+<meta property="og:url" content="http://example.com/toolsWebsite/index.html">
+<meta property="og:site_name" content="Winter">
+<meta property="og:description" content="常用工具  包括不限于渗透测试，程序开发等，当个备忘录吧，排名不分先后，陆续收集中…  burpsuite相关收集: https:&#x2F;&#x2F;github.com&#x2F;Mr-xn&#x2F;BurpSuite-collections  渗透测试有关的POC、脚本、提权小工具等，欢迎补充、完善 https:&#x2F;&#x2F;github.com&#x2F;Mr-xn&#x2F;Penetration_Testin">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-05T21:44:40.000Z">
+<meta property="article:modified_time" content="2025-09-05T21:46:38.558Z">
+<meta property="article:author" content="Winter">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>toolsWebsite - Winter</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Winter</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/toolsWebsite/" target="_self">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>工具站</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallhaven-w58q8x_1920x1080.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="内容来自https://mrxn.net/online-tools.html"></span>
+          
+        </div>
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          >
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+<article class="page-content">
+  <div class="line-numbers my-3 article-content">
+                    <h2 id="toc-1-">常用工具</h2>
+<blockquote>
+<p>包括不限于渗透测试，程序开发等，当个备忘录吧，排名不分先后，陆续收集中…</p>
+</blockquote>
+<h3 id="toc-1-1-">burpsuite相关收集:</h3>
+<p><a href="https://github.com/Mr-xn/BurpSuite-collections" target="_blank" rel="noopener">https://github.com/Mr-xn/BurpSuite-collections</a> </p>
+<h3 id="toc-1-2-">渗透测试有关的POC、脚本、提权小工具等，欢迎补充、完善</h3>
+<p><a href="https://github.com/Mr-xn/Penetration_Testing_POC" target="_blank" rel="noopener">https://github.com/Mr-xn/Penetration_Testing_POC</a></p>
+<h3 id="toc-1-3-">reverse_shell- 帮助你快速生成反弹shell代码,请自行更改你的IP</h3>
+<p><a target="_blank" rel="noopener" href="https://mrxn.net/reverse_shell.php">https://mrxn.net/reverse_shell.php</a></p>
+<h3 id="toc-1-4-">所有JDK历史版本集合下载:</h3>
+<p><a href="https://repo.huaweicloud.com/java/jdk/" target="_blank" rel="noopener">https://repo.huaweicloud.com/java/jdk/</a><br>
+<a href="https://jdk.java.net/archive/" target="_blank" rel="noopener">https://jdk.java.net/archive/</a><br>
+<a href="https://mac.filehorse.com/download-java-development-kit/" target="_blank" rel="noopener">https://mac.filehorse.com/download-java-development-kit/</a></p>
+<h3 id="toc-1-5-">XSS在线扫描</h3>
+<p><a href="https://www.xssstar.pro/" target="_blank" rel="noopener">https://www.xssstar.pro/</a></p>
+<h3 id="toc-1-6-">web指纹在线识别</h3>
+<p><a href="https://www.godeye.vip/" target="_blank" rel="noopener">https://www.godeye.vip/</a><br>
+<a href="http://www.yunsee.cn/finger.html" target="_blank" rel="noopener">http://www.yunsee.cn/finger.html</a><br>
+<a href="http://whatweb.bugscaner.com/look/" target="_blank" rel="noopener">http://whatweb.bugscaner.com/look/</a><br>
+<a href="https://whatweb.net/" target="_blank" rel="noopener">https://whatweb.net/</a><br>
+<a href="http://finger.tidesec.net/" target="_blank" rel="noopener">http://finger.tidesec.net/</a></p>
+<h3 id="toc-1-7-">CTF在线工具箱</h3>
+<p><a href="http://ctf.ssleye.com/" target="_blank" rel="noopener">http://ctf.ssleye.com/</a></p>
+<h3 id="toc-1-8-">在线（沙盒）运行PHP代码，各个功能函数</h3>
+<p><a href="https://onlinephpfunctions.com/" target="_blank" rel="noopener">https://onlinephpfunctions.com/</a></p>
+<h3 id="toc-1-9-">XSS在线平台以及余旋大佬的XSS助手</h3>
+<p><a href="https://xs.sb/xss.php?do=login" target="_blank" rel="noopener">https://xs.sb/xss.php?do=login</a><br>
+<a href="http://xssor.io/" target="_blank" rel="noopener">http://xssor.io/</a></p>
+<h3 id="toc-1-10-">在线破解NTLM hash:</h3>
+<p><a href="https://www.objectif-securite.ch/ophcrack" target="_blank" rel="noopener">https://www.objectif-securite.ch/ophcrack</a></p>
+<h3 id="toc-1-11-">安全相关资讯/教程聚合网站</h3>
+<p><a href="https://www.xj.hk/" target="_blank" rel="noopener">https://www.xj.hk/</a><br>
+<a href="https://f5.pm/" target="_blank" rel="noopener">https://f5.pm/</a><br>
+<a href="https://www.anquanke.com/" target="_blank" rel="noopener">https://www.anquanke.com/</a><br>
+<a href="https://www.freebuf.com/" target="_blank" rel="noopener">https://www.freebuf.com/</a><br>
+<a href="https://wiki.ioin.in/" target="_blank" rel="noopener">https://wiki.ioin.in/</a><br>
+<a href="https://www.sec-wiki.com/" target="_blank" rel="noopener">https://www.sec-wiki.com/</a><br>
+<a href="http://hackernews.cc/" target="_blank" rel="noopener">http://hackernews.cc/</a></p>
+<h3 id="toc-1-12-">漏洞库</h3>
+<p><a href="https://www.cnvd.org.cn/" target="_blank" rel="noopener">https://www.cnvd.org.cn/</a><br>
+<a href="https://www.securityfocus.com/" target="_blank" rel="noopener">https://www.securityfocus.com/</a><br>
+<a href="https://packetstormsecurity.com/" target="_blank" rel="noopener">https://packetstormsecurity.com/</a><br>
+<a href="https://www.exploit-db.com/" target="_blank" rel="noopener">https://www.exploit-db.com/</a><br>
+<a href="https://cxsecurity.com/" target="_blank" rel="noopener">https://cxsecurity.com/</a><br>
+<a href="https://shuimugan.com/" target="_blank" rel="noopener">https://shuimugan.com/</a><br>
+<a href="http://0day.today/" target="_blank" rel="noopener">http://0day.today/</a></p>
+<h3 id="toc-1-13-">在线聊天室</h3>
+<p><a href="https://drrr.com/" target="_blank" rel="noopener">https://drrr.com/</a></p>
+<h3 id="toc-1-14-">反混淆神器！CyberChef助你秒解混淆脚本</h3>
+<p><a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener">https://gchq.github.io/CyberChef/</a></p>
+<h3 id="toc-1-15-">在线C段/同服(旁站)</h3>
+<p><a href="https://rapiddns.io/sameip" target="_blank" rel="noopener">https://rapiddns.io/sameip</a><br>
+<a href="http://www.webscan.cc/" target="_blank" rel="noopener">http://www.webscan.cc/</a><br>
+<a href="https://chapangzhan.com" target="_blank" rel="noopener">https://chapangzhan.com</a><br>
+<a href="https://phpinfo.me/bing.php" target="_blank" rel="noopener">https://phpinfo.me/bing.php</a> </p>
+<h3 id="toc-1-16-">Linux提取助手</h3>
+<p><a href="https://github.com/mzet-/linux-exploit-suggester" target="_blank" rel="noopener">https://github.com/mzet-/linux-exploit-suggester</a></p>
+<h3 id="toc-1-17-">Windows提权相关EXP</h3>
+<p><a href="https://github.com/SecWiki/windows-kernel-exploits" target="_blank" rel="noopener">https://github.com/SecWiki/windows-kernel-exploits</a></p>
+<h3 id="toc-1-18-">windows 溢出提权小记+Linux&amp;Windows提权思维导图</h3>
+<p><a href="https://github.com/Mr-xn/Penetration_Testing_POC/blob/master/tools/Local%20Privilege%20Escalation.md" target="_blank" rel="noopener">https://github.com/Mr-xn/Penetration_Testing_POC/blob/master/tools/Local%20Privilege%20Escalation.md</a></p>
+<h3 id="toc-1-19-">Windows常见持久控制</h3>
+<p><a href="https://w.url.cn/s/AuAklEK" target="_blank" rel="noopener">https://w.url.cn/s/AuAklEK</a></p>
+<h3 id="toc-1-20-">红队资料集锦</h3>
+<p><a href="https://www.lshack.cn/772/" target="_blank" rel="noopener">https://www.lshack.cn/772/</a></p>
+<h3 id="toc-1-21-">找出CloudFlare背后的服务器真实IP</h3>
+<p><a href="http://www.crimeflare.org:82/" target="_blank" rel="noopener">http://www.crimeflare.org:82/</a></p>
+<h3 id="toc-1-22-">一键搭建kms激活服务端&amp;&amp;Windows客户端一键激活脚本:</h3>
+<p><a href="https://github.com/Mr-xn/kms-server-deploy" target="_blank" rel="noopener">https://github.com/Mr-xn/kms-server-deploy</a></p>
+<h3 id="toc-1-23-">搞安全的同学们的网盘:</h3>
+<p><a href="http://pan.ximcx.cn/home" target="_blank" rel="noopener">http://pan.ximcx.cn/home</a><br>
+<a href="https://disk.scan.cm/" target="_blank" rel="noopener">https://disk.scan.cm/</a></p>
+<h3 id="toc-1-24-">在线免费网盘:</h3>
+<p><a href="https://gofile.io/" target="_blank" rel="noopener">https://gofile.io/</a><br>
+<a href="https://filebin.net/" target="_blank" rel="noopener">https://filebin.net/</a><br>
+<a href="https://anonfiles.sbs/" target="_blank" rel="noopener">https://anonfiles.sbs/</a><br>
+<a href="https://bestfile.io/" target="_blank" rel="noopener">https://bestfile.io/</a><br>
+<a href="https://www.mediafire.com/" target="_blank" rel="noopener">https://www.mediafire.com/</a><br>
+<a href="https://pixeldrain.com/" target="_blank" rel="noopener">https://pixeldrain.com/</a><br>
+<a href="https://wormhole.app/" target="_blank" rel="noopener">https://wormhole.app/</a><br>
+<a href="https://musetransfer.com/" target="_blank" rel="noopener">https://musetransfer.com/</a><br>
+<a href="https://streamshare.wireway.ch/" target="_blank" rel="noopener">https://streamshare.wireway.ch/</a><br>
+<a href="https://filetransfer.io/" target="_blank" rel="noopener">https://filetransfer.io/</a><br>
+<a href="https://send.cm/" target="_blank" rel="noopener">https://send.cm/</a><br>
+<a href="https://3.0.3.0/image" target="_blank" rel="noopener">https://3.0.3.0/image</a><br>
+<a href="https://www.mediafire.com/" target="_blank" rel="noopener">https://www.mediafire.com/</a><br>
+<del><a href="https://bayfiles.com/" target="_blank" rel="noopener">https://bayfiles.com/</a></del><br>
+<a href="https://transfer.sh/" target="_blank" rel="noopener">https://transfer.sh/</a><br>
+<a href="https://wetransfer.com/" target="_blank" rel="noopener">https://wetransfer.com/</a><br>
+<del><a href="https://filechan.org/" target="_blank" rel="noopener">https://filechan.org/</a></del><br>
+<del><a href="https://letsupload.cc/" target="_blank" rel="noopener">https://letsupload.cc/</a></del><br>
+<a href="https://quickfile.cn" target="_blank" rel="noopener">https://quickfile.cn</a><br>
+<del><a href="https://anonfiles.com/" target="_blank" rel="noopener">https://anonfiles.com/</a></del><br>
+<a href="https://zaix.ru/upload" target="_blank" rel="noopener">https://zaix.ru/upload</a><br>
+<del><a href="https://upload.express/" target="_blank" rel="noopener">https://upload.express/</a></del><br>
+<del><a href="https://vshare.is/" target="_blank" rel="noopener">https://vshare.is/</a></del><br>
+<del><a href="https://anonfile.com/" target="_blank" rel="noopener">https://anonfile.com/</a></del><br>
+<a href="https://www.solidfiles.com/" target="_blank" rel="noopener">https://www.solidfiles.com/</a><br>
+<a href="https://www.mirrored.to/" target="_blank" rel="noopener">https://www.mirrored.to/</a><br>
+<a href="https://www.upload.ee/" target="_blank" rel="noopener">https://www.upload.ee/</a><br>
+<a href="http://tmp.link/" target="_blank" rel="noopener">http://tmp.link/</a><br>
+<a href="https://cowtransfer.com/" target="_blank" rel="noopener">https://cowtransfer.com/</a><br>
+<a href="https://pixeldrain.com/" target="_blank" rel="noopener">https://pixeldrain.com/</a><br>
+<a href="https://workupload.com/" target="_blank" rel="noopener">https://workupload.com/</a><br>
+<a href="https://krakenfiles.com/" target="_blank" rel="noopener">https://krakenfiles.com/</a><br>
+<a href="https://hxfile.co/?op=upload_form" target="_blank" rel="noopener">https://hxfile.co/?op=upload_form</a><br>
+<a href="https://www.transfernow.net/" target="_blank" rel="noopener">https://www.transfernow.net/</a><br>
+<a href="https://www.filemail.com/" target="_blank" rel="noopener">https://www.filemail.com/</a><br>
+<a href="https://www.transferxl.com/" target="_blank" rel="noopener">https://www.transferxl.com/</a><br>
+<a href="https://send-anywhere.com/" target="_blank" rel="noopener">https://send-anywhere.com/</a><br>
+<a href="https://www.sendbig.com/" target="_blank" rel="noopener">https://www.sendbig.com/</a><br>
+<a href="https://download.ru/" target="_blank" rel="noopener">https://download.ru/</a></p>
+<h3 id="toc-1-25-">在线图床:</h3>
+<p><a href="https://sm.ms/" target="_blank" rel="noopener">https://sm.ms/</a><br>
+<a href="https://imgchr.com/" target="_blank" rel="noopener">https://imgchr.com/</a><br>
+<a href="https://imgbb.com/" target="_blank" rel="noopener">https://imgbb.com/</a><br>
+<a href="https://img.aneeo.com/" target="_blank" rel="noopener">https://img.aneeo.com/</a><br>
+<a href="https://postimages.org/" target="_blank" rel="noopener">https://postimages.org/</a></p>
+<h3 id="toc-1-26-">在线文本分享</h3>
+<p><a href="https://pastes.dev/" target="_blank" rel="noopener">https://pastes.dev/</a><br>
+<a href="https://pastebin.com/" target="_blank" rel="noopener">https://pastebin.com/</a><br>
+<a href="https://controlc.com/" target="_blank" rel="noopener">https://controlc.com/</a><br>
+<a href="https://rentry.co/" target="_blank" rel="noopener">https://rentry.co/</a><br>
+<a href="https://zerobin.net/" target="_blank" rel="noopener">https://zerobin.net/</a><br>
+<a href="https://paste.to/" target="_blank" rel="noopener">https://paste.to/</a><br>
+<a href="https://ghostbin.co/" target="_blank" rel="noopener">https://ghostbin.co/</a><br>
+<a href="https://paste.ubuntu.com/" target="_blank" rel="noopener">https://paste.ubuntu.com/</a></p>
+<h3 id="toc-1-27-">临时邮箱:</h3>
+<p><a href="https://temp-mail.org/zh/" target="_blank" rel="noopener">https://temp-mail.org/zh/</a><br>
+<a href="https://www.linshiyouxiang.net/" target="_blank" rel="noopener">https://www.linshiyouxiang.net/</a><br>
+<a href="https://www.guerrillamail.com/zh/" target="_blank" rel="noopener">https://www.guerrillamail.com/zh/</a><br>
+<a href="https://www.moakt.com/zh" target="_blank" rel="noopener">https://www.moakt.com/zh</a><br>
+<a href="http://links.icamtech.com/" target="_blank" rel="noopener">http://links.icamtech.com/</a><br>
+<a href="https://mail.tm/zh/" target="_blank" rel="noopener">https://mail.tm/zh/</a><br>
+<a href="https://www.1secmail.com/" target="_blank" rel="noopener">https://www.1secmail.com/</a></p>
+<h3 id="toc-1-28-">伪造邮件、任意发件人发送Email邮件、伪造邮件地址发送电子邮件、任意邮件地址发送电子邮件</h3>
+<p><a href="http://tool.chacuo.net/mailanonymous" target="_blank" rel="noopener">http://tool.chacuo.net/mailanonymous</a></p>
+<h3 id="toc-1-29-">GPS边界数据</h3>
+<p><a href="https://gadm.org/download_country_v3.html" target="_blank" rel="noopener">https://gadm.org/download_country_v3.html</a></p>
+<h3 id="toc-1-30-">IP/段查询/IP历史解析记录</h3>
+<p><a href="https://www.ipip.net/" target="_blank" rel="noopener">https://www.ipip.net/</a><br>
+<a href="http://ip.bczs.net/" target="_blank" rel="noopener">http://ip.bczs.net/</a><br>
+<a href="https://www.boip.net/" target="_blank" rel="noopener">https://www.boip.net/</a><br>
+<a href="https://site.ip138.com/" target="_blank" rel="noopener">https://site.ip138.com/</a><br>
+<a href="http://ip-api.com/json" target="_blank" rel="noopener">http://ip-api.com/json</a><br>
+<a href="https://api.ipify.org/?format" target="_blank" rel="noopener">https://api.ipify.org/?format</a>=<br>
+<a href="https://ipw.cn/" target="_blank" rel="noopener">https://ipw.cn/</a><br>
+<a href="https://ip.im/" target="_blank" rel="noopener">https://ip.im/</a></p>
+<h3 id="toc-1-31-">IP地址批量查询</h3>
+<p><a href="https://lwebapp.com/zh/ip-batch" target="_blank" rel="noopener">https://lwebapp.com/zh/ip-batch</a><br>
+<a href="https://uutool.cn/extract-ip/" target="_blank" rel="noopener">https://uutool.cn/extract-ip/</a><br>
+<a href="https://tools.aizhan.com/ip/" target="_blank" rel="noopener">https://tools.aizhan.com/ip/</a><br>
+<a href="https://ip.cha127.com/piliang.htm" target="_blank" rel="noopener">https://ip.cha127.com/piliang.htm</a></p>
+<h3 id="toc-1-32-">DNS记录/子域名/同服域名</h3>
+<p><a href="https://securitytrails.com/" target="_blank" rel="noopener">https://securitytrails.com/</a></p>
+<h3 id="toc-1-33-">Rapid7 Labs 公开数据</h3>
+<p><a href="https://opendata.rapid7.com/" target="_blank" rel="noopener">https://opendata.rapid7.com/</a></p>
+<h3 id="toc-1-34-">IP反查域名</h3>
+<p><a href="https://dns.aizhan.com/" target="_blank" rel="noopener">https://dns.aizhan.com/</a>=<br>
+<a href="https://www.yougetsignal.com/tools/web-sites-on-web-server/" target="_blank" rel="noopener">https://www.yougetsignal.com/tools/web-sites-on-web-server/</a><br>
+<a href="https://tools.ipip.net/ipdomain.php?ip=210.56.60.14" target="_blank" rel="noopener">https://tools.ipip.net/ipdomain.php?ip=210.56.60.14</a><br>
+<a href="http://ip.yqie.com/iptodomain.aspx?ip=210.56.60.14" target="_blank" rel="noopener">http://ip.yqie.com/iptodomain.aspx?ip=210.56.60.14</a></p>
+<h3 id="toc-1-35-">同IP网站查询</h3>
+<p><a href="http://s.tool.chinaz.com/same" target="_blank" rel="noopener">http://s.tool.chinaz.com/same</a><br>
+<a href="https://www.webscan.cc/search/" target="_blank" rel="noopener">https://www.webscan.cc/search/</a></p>
+<h3 id="toc-1-36-">根据IP搜索更多IP有关信息</h3>
+<p>zoomeye(钟馗之眼):<a href="https://www.zoomeye.org" target="_blank" rel="noopener">https://www.zoomeye.org</a><br>
+shodan:<a href="https://www.shodan.io" target="_blank" rel="noopener">https://www.shodan.io</a><br>
+Fofa:<a href="https://fofa.so" target="_blank" rel="noopener">https://fofa.so</a><br>
+Censys:<a href="https://censys.io/ipv4/" target="_blank" rel="noopener">https://censys.io/ipv4/</a><br>
+Dnsdb搜索引擎:<a href="https://www.dnsdb.io" target="_blank" rel="noopener">https://www.dnsdb.io</a></p>
+<h3 id="toc-1-37-">在线计算IP子网掩码/主机</h3>
+<p><a href="http://jodies.de/ipcalc" target="_blank" rel="noopener">http://jodies.de/ipcalc</a></p>
+<h3 id="toc-1-38-">经纬度在线查询,地名(批量)查询经纬度,经纬度(批量)查询地名</h3>
+<p><a href="http://map.yanue.net/" target="_blank" rel="noopener">http://map.yanue.net/</a></p>
+<h3 id="toc-1-39-">PDF在线处理/转换/破解</h3>
+<p><a href="https://www.ilovepdf.com/zh-cn" target="_blank" rel="noopener">https://www.ilovepdf.com/zh-cn</a></p>
+<h3 id="toc-1-40-">免费虚拟空间</h3>
+<p><a href="https://www.000webhost.com/" target="_blank" rel="noopener">https://www.000webhost.com/</a></p>
+<h3 id="toc-1-41-">在线代理访问:</h3>
+<p><a href="https://proxy.qnid.cc/" target="_blank" rel="noopener">https://proxy.qnid.cc/</a><br>
+<a href="http://kproxy.com/" target="_blank" rel="noopener">http://kproxy.com/</a><br>
+<a href="https://www.croxyproxy.com/_zh/" target="_blank" rel="noopener">https://www.croxyproxy.com/_zh/</a><br>
+<a href="https://www.hidemyass-freeproxy.com/" target="_blank" rel="noopener">https://www.hidemyass-freeproxy.com/</a><br>
+<a href="https://hidester.com/proxy/" target="_blank" rel="noopener">https://hidester.com/proxy/</a><br>
+<a href="https://freeproxy.win/" target="_blank" rel="noopener">https://freeproxy.win/</a><br>
+<a href="https://www.croxyproxy.com/" target="_blank" rel="noopener">https://www.croxyproxy.com/</a><br>
+<a href="https://www.4everproxy.com/" target="_blank" rel="noopener">https://www.4everproxy.com/</a><br>
+<a href="https://www.vpnbook.com/webproxy" target="_blank" rel="noopener">https://www.vpnbook.com/webproxy</a><br>
+<a href="https://weboproxy.com/" target="_blank" rel="noopener">https://weboproxy.com/</a><br>
+<a href="https://web.stupidproxy.com/" target="_blank" rel="noopener">https://web.stupidproxy.com/</a><br>
+<a href="https://www.sudoproxy.net/" target="_blank" rel="noopener">https://www.sudoproxy.net/</a><br>
+<a href="https://www.proxysite.com/" target="_blank" rel="noopener">https://www.proxysite.com/</a><br>
+<a href="https://proxyscrape.com/web-proxy" target="_blank" rel="noopener">https://proxyscrape.com/web-proxy</a><br>
+<a href="http://divozor.ru/" target="_blank" rel="noopener">http://divozor.ru/</a><br>
+<a href="http://free-proxy.cz/en/" target="_blank" rel="noopener">http://free-proxy.cz/en/</a><br>
+<a href="https://proxy.itprosec.eu.org/" target="_blank" rel="noopener">https://proxy.itprosec.eu.org/</a><br>
+<a href="https://proxy.freecdn.workers.dev/" target="_blank" rel="noopener">https://proxy.freecdn.workers.dev/</a></p>
+<h3 id="toc-1-42-">PHP  Composer 官方资源库:</h3>
+<p><a href="https://packagist.org/" target="_blank" rel="noopener">https://packagist.org/</a></p>
+<h3 id="toc-1-43-">Regulex 是一个JavaScript正则表达式的可视化分析工具:</h3>
+<p><a href="https://jex.im/regulex/" target="_blank" rel="noopener">https://jex.im/regulex/</a></p>
+<h3 id="toc-1-44-">在线js加密/解密:</h3>
+<p><a href="http://www.jshaman.com/protect.html" target="_blank" rel="noopener">http://www.jshaman.com/protect.html</a><br>
+<a href="https://obfuscator.io/" target="_blank" rel="noopener">https://obfuscator.io/</a><br>
+<a href="https://www.jsjiami.com/" target="_blank" rel="noopener">https://www.jsjiami.com/</a></p>
+<h3 id="toc-1-45-">JavaScript逆向</h3>
+<blockquote>
+<p>Webcrack 是一个用于逆向工程 JavaScript 的工具，主要功能包括反混淆（deobfuscate）、解压缩（unminify）和解包（unpack）打包的 JavaScript 代码</p>
+</blockquote>
+<p><a href="https://webcrack.netlify.app/" target="_blank" rel="noopener">https://webcrack.netlify.app/</a></p>
+<h3 id="toc-1-46-">子域名查询:</h3>
+<p><a href="https://rapiddns.io/subdomain" target="_blank" rel="noopener">https://rapiddns.io/subdomain</a><br>
+<a href="https://www.dnsscan.cn/" target="_blank" rel="noopener">https://www.dnsscan.cn/</a><br>
+<a href="https://dns.bufferover.run/dns?q=mrxn.net" target="_blank" rel="noopener">https://dns.bufferover.run/dns?q=mrxn.net</a><br>
+<a href="https://dnsdumpster.com/" target="_blank" rel="noopener">https://dnsdumpster.com/</a><br>
+<a href="http://rank.chinaz.com/all/" target="_blank" rel="noopener">http://rank.chinaz.com/all/</a><br>
+<a href="https://ruo.me/sub/" target="_blank" rel="noopener">https://ruo.me/sub/</a><br>
+<a href="https://phpinfo.me/domain/" target="_blank" rel="noopener">https://phpinfo.me/domain/</a><br>
+<a href="http://tools.bugscaner.com/subdomain/" target="_blank" rel="noopener">http://tools.bugscaner.com/subdomain/</a><br>
+<a href="https://dnsdb.io/zh-cn/search?q=mrxn.net" target="_blank" rel="noopener">https://dnsdb.io/zh-cn/search?q=mrxn.net</a><br>
+<a href="https://www.baidu.com/s?wd=site:mrxn.net" target="_blank" rel="noopener">https://www.baidu.com/s?wd=site:mrxn.net</a><br>
+<a href="https://www.google.com.hk/search?q=site:mrxn.net" target="_blank" rel="noopener">https://www.google.com.hk/search?q=site:mrxn.net</a><br>
+<a href="https://cn.bing.com/search?q=site:mrxn.net" target="_blank" rel="noopener">https://cn.bing.com/search?q=site:mrxn.net</a><br>
+<a href="https://search.yahoo.com/search?p=site:mrxn.net" target="_blank" rel="noopener">https://search.yahoo.com/search?p=site:mrxn.net</a><br>
+<a href="https://github.com/search?o=desc&amp;p=2&amp;q=%22mrxn.net%22&amp;s=indexed&amp;type=Code&amp;utf8=%E2%9C%93" target="_blank" rel="noopener">https://github.com/search?o=desc&amp;p=2&amp;q=%22mrxn.net%22&amp;s=indexed&amp;type=Code&amp;utf8=%E2%9C%93</a><br>
+Shodan/Zoomeye/Fofa/Censys等网络资产工具</p>
+<h3 id="toc-1-47-">在线NMAP扫描:</h3>
+<p><a href="http://www.scanip.cn/" target="_blank" rel="noopener">http://www.scanip.cn/</a></p>
+<h3 id="toc-1-48-">敏感信息泄露/弱口令相关服务在线搜索:</h3>
+<p><a href="https://leaks.nobody.run/" target="_blank" rel="noopener">https://leaks.nobody.run/</a>#</p>
+<h3 id="toc-1-49-">远程控制软件:</h3>
+<p><a href="https://www.todesk.com/download.html" target="_blank" rel="noopener">https://www.todesk.com/download.html</a><br>
+<h3 id="toc-1-50-">在线查找同类型网站:</h3>
+<p><a href="https://www.similarsites.com/" target="_blank" rel="noopener">https://www.similarsites.com/</a><br>
+<a href="https://publicwww.com/" target="_blank" rel="noopener">https://publicwww.com/</a></p>
+<h3 id="toc-1-51-">Java web安全:</h3>
+<p><a href="https://javasec.org/" target="_blank" rel="noopener">https://javasec.org/</a></p>
+<h3 id="toc-1-52-">JAVA 在线反编译</h3>
+<p><a href="http://javare.cn/" target="_blank" rel="noopener">http://javare.cn/</a><br>
+<a href="https://www.javainuse.com/decomp" target="_blank" rel="noopener">https://www.javainuse.com/decomp</a><br>
+<a href="https://jdec.app/" target="_blank" rel="noopener">https://jdec.app/</a><br>
+<a href="http://www.javadecompilers.com/" target="_blank" rel="noopener">http://www.javadecompilers.com/</a> （支持 apk ）</p>
+<h3 id="toc-1-53-">MAC软件在线搜索下载:</h3>
+<h3 id="toc-1-54-">Charles授权码在线生成:</h3>
+<p><a href="https://www.charles.ren/" target="_blank" rel="noopener">https://www.charles.ren/</a></p>
+<h3 id="toc-1-55-">jetbrains全家桶注册码:</h3>
+<p><a href="http://idea.medeming.com/" target="_blank" rel="noopener">http://idea.medeming.com/</a></p>
+<h3 id="toc-1-56-">下载Firefox浏览器最新的各个版本以及历史版本下载:</h3>
+<p><a href="https://www.mozilla.org/zh-CN/firefox/all/#product-desktop-release" target="_blank" rel="noopener">https://www.mozilla.org/zh-CN/firefox/all/#product-desktop-release</a><br>
+<a href="https://ftp.mozilla.org/pub/firefox/releases/" target="_blank" rel="noopener">https://ftp.mozilla.org/pub/firefox/releases/</a></p>
+<h3 id="toc-1-57-">chrome浏览器以及chromium历史版本下载:</h3>
+<p><a href="https://www.slimjet.com/chrome/google-chrome-old-version.php" target="_blank" rel="noopener">https://www.slimjet.com/chrome/google-chrome-old-version.php</a><br>
+<a href="https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html" target="_blank" rel="noopener">https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html</a></p>
+<h3 id="toc-1-58-">在线下载virustotal的样本文件:</h3>
+<p><a href="https://zerodaylab.us/virustotal/" target="_blank" rel="noopener">https://zerodaylab.us/virustotal/</a></p>
+<h3 id="toc-1-59-">在线 SSH 中转客户端:</h3>
+<p><a href="https://sshwifty.herokuapp.com/" target="_blank" rel="noopener">https://sshwifty.herokuapp.com/</a></p>
+<h3 id="toc-1-60-">nuclei-templates在线生成命令格式</h3>
+<p><a href="https://nuclei-templates.netlify.app/" target="_blank" rel="noopener">https://nuclei-templates.netlify.app/</a></p>
+<h3 id="toc-1-61-">JWT 在线解码编码</h3>
+<p><a href="https://tooltt.com/jwt-decode/" target="_blank" rel="noopener">https://tooltt.com/jwt-decode/</a><br>
+<a href="https://tooltt.com/jwt-encode/" target="_blank" rel="noopener">https://tooltt.com/jwt-encode/</a></p>
+<h3 id="toc-1-62-">navicat 在线解密</h3>
+<p><a target="_blank" rel="noopener" href="https://mrxn.net/php/navicat/index.html">https://mrxn.net/php/navicat/index.html</a></p>
+<h3 id="toc-1-63-">在线APP分析检查:</h3>
+<p>摸瓜：<a href="https://mogua.co" target="_blank" rel="noopener">https://mogua.co</a> 免费 无限制<br>
+腾讯金刚审计系统 <a href="http://service.security.tencent.com/kingkong" target="_blank" rel="noopener">http://service.security.tencent.com/kingkong</a> 免费 无限制<br>
+腾讯御安全 <a href="http://yaq.qq.com/" target="_blank" rel="noopener">http://yaq.qq.com/</a> 免费 查看漏洞详情需认证<br>
+阿里聚安全 <a href="http://jaq.alibaba.com/" target="_blank" rel="noopener">http://jaq.alibaba.com/</a> 免费 查看漏洞详情需认证<br>
+360显微镜 <a href="http://appscan.360.cn/" target="_blank" rel="noopener">http://appscan.360.cn/</a> 免费 无限制<br>
+360APP漏洞扫描 <a href="http://dev.360.cn/html/vulscan/scanning.html" target="_blank" rel="noopener">http://dev.360.cn/html/vulscan/scanning.html</a> 免费 无限制<br>
+百度MTC <a href="http://mtc.baidu.com" target="_blank" rel="noopener">http://mtc.baidu.com</a> 9.9元/次 无限制<br>
+梆梆 <a href="https://dev.bangcle.com" target="_blank" rel="noopener">https://dev.bangcle.com</a> 免费 无限制<br>
+爱内测 <a href="http://www.ineice.com/" target="_blank" rel="noopener">http://www.ineice.com/</a> 免费 无限制<br>
+通付盾 <a href="http://www.appfortify.cn/" target="_blank" rel="noopener">http://www.appfortify.cn/</a> 免费 无限制<br>
+NAGA <a href="http://www.nagain.com/appscan/" target="_blank" rel="noopener">http://www.nagain.com/appscan/</a> 免费 无限制<br>
+GES审计系统 <a href="http://01hackcode.com/" target="_blank" rel="noopener">http://01hackcode.com/</a> 免费 无限制<br>
+盘古出品的Janeushttp://appscan.io<br>
+Janus <a href="http://cloud.appscan.io" target="_blank" rel="noopener">http://cloud.appscan.io</a><br>
+APP逆向main_classify_list <a href="https://android.fallible.co/" target="_blank" rel="noopener">https://android.fallible.co/</a><br>
+java在线反编译Java decompiler online <a href="http://www.javadecompilers.com" target="_blank" rel="noopener">http://www.javadecompilers.com</a><br>
+腾讯电脑管家:哈勃 <a href="http://habo.qq.com/" target="_blank" rel="noopener">http://habo.qq.com/</a><br>
+腾讯TSRC:金刚 <a href="http://service.security.tencent.com/" target="_blank" rel="noopener">http://service.security.tencent.com/</a><br>
+阿里聚安全:<a href="http://jaq.alibaba.com/" target="_blank" rel="noopener">http://jaq.alibaba.com/</a><br>
+西安交通大学 sanddroid:<a href="http://sanddroid.xjtu.edu.cn/#home" target="_blank" rel="noopener">http://sanddroid.xjtu.edu.cn/#home</a><br>
+金山火眼:<a href="http://fireeye.ijinshan.com/analyse.html" target="_blank" rel="noopener">http://fireeye.ijinshan.com/analyse.html</a><br>
+瀚海源文件B超:<a href="https://b-chao.com" target="_blank" rel="noopener">https://b-chao.com</a></p>
+<h3 id="toc-1-64-">Windows 原版系统下载</h3>
+<p><a href="https://uup.rg-adguard.net/" target="_blank" rel="noopener">https://uup.rg-adguard.net/</a><br>
+<a href="https://uupdump.net/" target="_blank" rel="noopener">https://uupdump.net/</a><br>
+<a href="https://msdn.itellyou.cn/" target="_blank" rel="noopener">https://msdn.itellyou.cn/</a><br>
+<a href="https://hellowindows.cn/" target="_blank" rel="noopener">https://hellowindows.cn/</a><br>
+<a href="https://latest10.win/" target="_blank" rel="noopener">https://latest10.win/</a><br>
+<a href="https://msdn.sjjzm.com/" target="_blank" rel="noopener">https://msdn.sjjzm.com/</a></p>
+<h3 id="toc-1-65-">JAVA 反序列化在线解析</h3>
+<p><a href="https://0xby.com/onlinetools/Deserial.html" target="_blank" rel="noopener">https://0xby.com/onlinetools/Deserial.html</a></p>
+<h3 id="toc-1-66-">Shiro rememberMe 在线解密</h3>
+<p><a href="https://vulsee.com/tools/shiroDe/shiroDecrypt.html" target="_blank" rel="noopener">https://vulsee.com/tools/shiroDe/shiroDecrypt.html</a><br>
+<a href="https://www.cocosec.com/shiro_rememberMe/" target="_blank" rel="noopener">https://www.cocosec.com/shiro_rememberMe/</a><br>
+<a href="https://sec.dog/shiroDecrypt.html" target="_blank" rel="noopener">https://sec.dog/shiroDecrypt.html</a><br>
+<a href="https://simolin.cn/tools/shiro/" target="_blank" rel="noopener">https://simolin.cn/tools/shiro/</a><br>
+<a href="https://www.lezy.cn/tools/rememberMe/" target="_blank" rel="noopener">https://www.lezy.cn/tools/rememberMe/</a></p>
+<h3 id="toc-1-67-">TLS透明代理/解密</h3>
+<p><a href="https://www.netresec.com/?page=PolarProxy" target="_blank" rel="noopener">https://www.netresec.com/?page=PolarProxy</a></p>
+<h3 id="toc-1-68-">在线端口扫描</h3>
+<p><a href="http://www.jsons.cn/port/" target="_blank" rel="noopener">http://www.jsons.cn/port/</a><br>
+<a href="http://duankou.wlphp.com/" target="_blank" rel="noopener">http://duankou.wlphp.com/</a><br>
+<a href="http://coolaf.com/tool/port" target="_blank" rel="noopener">http://coolaf.com/tool/port</a><br>
+<a href="https://tool.chinaz.com/port/" target="_blank" rel="noopener">https://tool.chinaz.com/port/</a><br>
+<a href="https://port.hwcha.com/" target="_blank" rel="noopener">https://port.hwcha.com/</a><br>
+<a href="https://btools.net/port" target="_blank" rel="noopener">https://btools.net/port</a><br>
+<a href="https://www.uutoolkit.com/tool/port" target="_blank" rel="noopener">https://www.uutoolkit.com/tool/port</a><br>
+<a href="https://www.aicesu.cn/port/" target="_blank" rel="noopener">https://www.aicesu.cn/port/</a><br>
+<a href="http://tool.huazhaox.com/port-check" target="_blank" rel="noopener">http://tool.huazhaox.com/port-check</a><br>
+<a href="https://old.ijackey.com/tools/port/" target="_blank" rel="noopener">https://old.ijackey.com/tools/port/</a><br>
+<a href="https://hackertarget.com/nmap-online-port-scanner/" target="_blank" rel="noopener">https://hackertarget.com/nmap-online-port-scanner/</a><br>
+<a href="https://cnnqr.com/port.html" target="_blank" rel="noopener">https://cnnqr.com/port.html</a><br>
+<a href="https://www.tool.cab/inquire/port.html" target="_blank" rel="noopener">https://www.tool.cab/inquire/port.html</a><br>
+<a href="https://www.sojson.com/zz/portscan.html" target="_blank" rel="noopener">https://www.sojson.com/zz/portscan.html</a><br>
+<a href="http://www.ab173.com/zhanzhang/port.php" target="_blank" rel="noopener">http://www.ab173.com/zhanzhang/port.php</a><br>
+<a href="http://www.ip33.com/port_scan.html" target="_blank" rel="noopener">http://www.ip33.com/port_scan.html</a><br>
+<a href="http://www.ab173.com/zhanzhang/webscan.php" target="_blank" rel="noopener">http://www.ab173.com/zhanzhang/webscan.php</a></p>
+<h3 id="toc-1-69-">免费域名解析</h3>
+<p><a href="https://nip.io/" target="_blank" rel="noopener">https://nip.io/</a><br>
+利用nip的任意IP解析进行即可，比如1.1.1.1.nip.io解析到1.1.1.1，其他更多用法见官网描述</p>
+<h3 id="toc-1-70-">在线接码</h3>
+<p><a href="https://onlinesim.ru/en/" target="_blank" rel="noopener">https://onlinesim.ru/en/</a><br>
+<a href="https://sms-activate.org/cn" target="_blank" rel="noopener">https://sms-activate.org/cn</a><br>
+<a href="https://sms.qisms.com/index" target="_blank" rel="noopener">https://sms.qisms.com/index</a><br>
+<a href="https://daisysms.com/" target="_blank" rel="noopener">https://daisysms.com/</a></p>
+<h3 id="toc-1-71-">备案查询</h3>
+<p><a href="https://check.lzfh.com/" target="_blank" rel="noopener">https://check.lzfh.com/</a><br>
+<a href="https://beian.miit.gov.cn/#/Integrated/recordQuery" target="_blank" rel="noopener">https://beian.miit.gov.cn/#/Integrated/recordQuery</a><br>
+<a href="https://beian.mps.gov.cn/#/query/webSearch?code=35020302000020" target="_blank" rel="noopener">https://beian.mps.gov.cn/#/query/webSearch?code=35020302000020</a></p>
+<h3 id="toc-1-72-">whois查询</h3>
+<p><a href="https://whois.aite.xyz/" target="_blank" rel="noopener">https://whois.aite.xyz/</a><br>
+<a href="https://who.cx/" target="_blank" rel="noopener">https://who.cx/</a></p>
+<h3 id="toc-1-73-">社工库</h3>
+<p><a href="https://sgk66.cc/" target="_blank" rel="noopener">https://sgk66.cc/</a><br>
+<a href="https://loseprivacy.click/" target="_blank" rel="noopener">https://loseprivacy.click/</a></p>
+<h3 id="toc-1-74-">文档追踪</h3>
+<p><a href="https://canarytokens.org/" target="_blank" rel="noopener">https://canarytokens.org/</a></p>
+<h3 id="toc-1-75-">在线接码</h3>
+<p><a href="https://temp-sms.org/" target="_blank" rel="noopener">https://temp-sms.org/</a></p>
+<h3 id="toc-1-76-">短网址+IP记录</h3>
+<p><a href="https://grabify.link/" target="_blank" rel="noopener">https://grabify.link/</a></p>
+<h3 id="toc-1-77-">IP地址信息查询</h3>
+<p><a href="https://www.hao7188.com/" target="_blank" rel="noopener">https://www.hao7188.com/</a><br>
+<a href="https://ping0.cc/" target="_blank" rel="noopener">https://ping0.cc/</a><br>
+<a href="https://ipinfo.io/" target="_blank" rel="noopener">https://ipinfo.io/</a></p>
+<h3 id="toc-1-78-">js逆向中用到的AST分析助手</h3>
+<p><a href="https://astexplorer.net/" target="_blank" rel="noopener">https://astexplorer.net/</a></p>
+<h3 id="toc-1-79-">webpack 解包</h3>
+<p><a href="https://webcrack.netlify.app/" target="_blank" rel="noopener">https://webcrack.netlify.app/</a></p>
+<h3 id="toc-1-80-">JS代码反混淆</h3>
+<p><a href="https://js-deobfuscator.vercel.app/" target="_blank" rel="noopener">https://js-deobfuscator.vercel.app/</a></p>
+<h3 id="toc-1-81-">phpfuck</h3>
+<p><a href="https://splitline.github.io/PHPFuck/" target="_blank" rel="noopener">https://splitline.github.io/PHPFuck/</a></p>
+<h3 id="toc-1-82-">jsfuck</h3>
+<p><a href="https://jsfuck.com/" target="_blank" rel="noopener">https://jsfuck.com/</a></p>
+<h3 id="toc-1-83-">urlquery</h3>
+<p><a href="https://www.urlquery.net/" target="_blank" rel="noopener">https://www.urlquery.net/</a></p>
+<h3 id="toc-1-84-">漏洞驱动程序数据库</h3>
+<p><a href="https://www.loldrivers.io/" target="_blank" rel="noopener">https://www.loldrivers.io/</a></p>
+<h3 id="toc-1-85-">常见二进制命令注入参数查询</h3>
+<p><a href="https://gtfobins.github.io/" target="_blank" rel="noopener">https://gtfobins.github.io/</a></p>
+<h3 id="toc-1-86-">纯净家宽IP</h3>
+<p><a href="https://www.webshare.io/" target="_blank" rel="noopener">https://www.webshare.io/</a></p>
+<h3 id="toc-1-87-">XXE 测试工具</h3>
+<p><a href="https://github.com/BuffaloWill/oxml_xxe" target="_blank" rel="noopener">https://github.com/BuffaloWill/oxml_xxe</a><br>
+<a href="https://hub.docker.com/r/secsi/oxml_xxe" target="_blank" rel="noopener">https://hub.docker.com/r/secsi/oxml_xxe</a><br>
+<a href="https://github.com/kljunowsky/XXElixir" target="_blank" rel="noopener">https://github.com/kljunowsky/XXElixir</a><br>
+<a href="https://github.com/divinepwner/XXE-OOB-Helper" target="_blank" rel="noopener">https://github.com/divinepwner/XXE-OOB-Helper</a><br>
+<a href="https://github.com/enjoiz/XXEinjector" target="_blank" rel="noopener">https://github.com/enjoiz/XXEinjector</a></p>
+<h3 id="toc-1-88-">以图搜图</h3>
+<blockquote>
+<p>除了常见的搜索引擎如Google、百度、bing这些，下面这些也不错</p>
+</blockquote>
+<p><a href="https://yandex.com/images" target="_blank" rel="noopener">https://yandex.com/images</a><br>
+<a href="https://tineye.com/" target="_blank" rel="noopener">https://tineye.com/</a><br>
+<a href="https://geospy.ai/" target="_blank" rel="noopener">https://geospy.ai/</a><br>
+<a href="https://trace.moe/" target="_blank" rel="noopener">https://trace.moe/</a> （动漫）</p>
+<h3 id="toc-1-89-">渗透测试辅助工具</h3>
+<blockquote>
+<p>快速生成sql注入检测、Google dark语法等</p>
+</blockquote>
+<p><a href="https://adce626.github.io/adce/" target="_blank" rel="noopener">Deep Google Search - Bug Bounty</a><br>
+<a href="https://adce626.github.io/SQLi-Pentest-Toolkit/" target="_blank" rel="noopener">SQL Injection Pentest Toolkit</a><br>
+<a href="https://argfuscator.net/" target="_blank" rel="noopener">argfuscator: Windows命令混淆工具</a></p>
+<h3 id="toc-1-90-">社工工具</h3>
+<p><a href="https://veriftools.net/zh_hans/china_id" target="_blank" rel="noopener">在线生成身份证</a><br>
+<a href="https://namefake.com/" target="_blank" rel="noopener">虚拟身份信息生成</a><br>
+<a href="https://thispersondoesnotexist.com/" target="_blank" rel="noopener">随机生成一张人头像</a><br>
+<a href="https://realaddress.fuyiran.com/" target="_blank" rel="noopener">真实地址生成器</a><br>
+<a href="https://doc.veridocs.cc/" target="_blank" rel="noopener">各种高质量驾照，护照，ID，水电费账单等PSD模板下载</a></p>
+<h3 id="toc-1-91-">持续更新中...欢迎留言交流！</h3>
+<blockquote>
+<p>PS:一般联系我请发邮件或者GitHub给我提issue，能最快看到消息！</p>
+</blockquote>                </div>
+
+  
+
+</article>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -153,6 +153,18 @@
           
           
             <li class="nav-item">
+              <a class="nav-link" href="/toolsWebsite/" target="_self">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>工具站</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
               <a class="nav-link" href="/about/" target="_self">
                 <i class="iconfont icon-user-fill"></i>
                 <span>关于</span>
@@ -502,15 +514,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8702-Shiro721%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
-          Java反序列化Shiro篇02-Shiro721流程分析
+        <a href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8701-Shiro550%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
+          Java反序列化Shiro篇01-Shiro550流程分析
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8702-Shiro721%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8701-Shiro550%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
         <div>
-          Java反序列化Shiro篇02-Shiro721流程分析在 Shiro550 漏洞中，Cookie 所使用的 AES 加密密钥为硬编码，所以我们可以构造恶意序列化数据并使用固定的 AES 密钥进行正确加密恶意序列发送给服务端，进而达到攻击的目的。但在该漏洞公布后，Shiro 官方修复了这一漏洞，将AES密钥修改成了动态生成。也就是说，对于每一个 Cookie，都是使用不同的密钥进行加解密的。 S
+          0x01 前言shiro550 的根本原因：固定 key 加密 老漏洞了，不过之前写的不知道让我丢哪里去了，只剩下复现在，上一篇文章有简单复现，但是那个跟技术就不沾边了，重新写一下漏洞的分析而且现在CommonsCollections链也已经出到这么多了 任何反序列化漏洞还是要借助具体案例来进行学习，莫名其妙就写了7k多 0x02 环境用的环境是下面的，jdk和tomcat不同版本我没有试过  j
         </div>
       </a>
 
@@ -563,15 +575,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8701-Shiro550%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
-          Java反序列化Shiro篇01-Shiro550流程分析
+        <a href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8702-Shiro721%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
+          Java反序列化Shiro篇02-Shiro721流程分析
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8701-Shiro550%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8702-Shiro721%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" target="_self">
         <div>
-          0x01 前言shiro550 的根本原因：固定 key 加密 老漏洞了，不过之前写的不知道让我丢哪里去了，只剩下复现在，上一篇文章有简单复现，但是那个跟技术就不沾边了，重新写一下漏洞的分析而且现在CommonsCollections链也已经出到这么多了 任何反序列化漏洞还是要借助具体案例来进行学习，莫名其妙就写了7k多 0x02 环境用的环境是下面的，jdk和tomcat不同版本我没有试过  j
+          Java反序列化Shiro篇02-Shiro721流程分析在 Shiro550 漏洞中，Cookie 所使用的 AES 加密密钥为硬编码，所以我们可以构造恶意序列化数据并使用固定的 AES 密钥进行正确加密恶意序列发送给服务端，进而达到攻击的目的。但在该漏洞公布后，Shiro 官方修复了这一漏洞，将AES密钥修改成了动态生成。也就是说，对于每一个 Cookie，都是使用不同的密钥进行加解密的。 S
         </div>
       </a>
 
