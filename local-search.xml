@@ -11,14 +11,14 @@
     <content type="html"><![CDATA[<p>还是让我找到了Mac微信双开的办法，所需命令如下</p><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">1、复制微信应用：<br>sudo cp -R <span class="hljs-string">/Applications/WeChat.app</span> <span class="hljs-string">/Applications/WeChat2.app</span><br>2、修改 Bundle ID：<br>sudo <span class="hljs-string">/usr/libexec/PlistBuddy</span> -c <span class="hljs-string">&quot;Set :CFBundleIdentifier com.tencent.xinWeChat2&quot;</span> <span class="hljs-string">/Applications/WeChat2.app/Contents/Info.plist</span><br>3、重新签名应用：<br>sudo codesign <span class="hljs-params">--force</span> <span class="hljs-params">--deep</span> <span class="hljs-params">--sign</span> - <span class="hljs-string">/Applications/WeChat2.app</span><br></code></pre></td></tr></table></figure><p>然后去应用程序里找WeChat2即可，其实本质上就是重新复制了一个新的微信仅此而已</p>]]></content>
     
     
-    <categories>
-      
-      <category>Mac使用</category>
-      
-      <category>微信</category>
-      
-    </categories>
     
+    <tags>
+      
+      <tag>Mac使用</tag>
+      
+      <tag>微信</tag>
+      
+    </tags>
     
   </entry>
   
